@@ -3,3 +3,7 @@ devops/.env.*
 .env
 .env.*
 .vagrant/
+frontend/.eslintcache
+.eslintcache
+**/node_modules/
+$(cat .gitignore)
