@@ -1,0 +1,5 @@
+devops/.env
+devops/.env.*
+.env
+.env.*
+.vagrant/
