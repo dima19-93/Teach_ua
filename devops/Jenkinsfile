@@ -36,6 +36,7 @@ pipeline {
                         playbook: "${env.PLAYBOOK_FILE}",
                         inventory: "${env.INVENTORY_FILE}",
                         credentialsId: "${env.SSH_CRED_ID}",
+                        vaultCredentialsId: 'ansible-vault-password',
                         extraVars: [
                             jenkins_build_num: "${env.BUILD_NUMBER}",
                             jenkins_job_name: "${env.JOB_NAME}",
