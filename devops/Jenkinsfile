@@ -40,7 +40,7 @@ pipeline {
                              ansible-vault decrypt \
                              --vault-password-file=vault_pass.txt \
                              --output=devops/Ansible/group_vars/all/vars.yml \
-                             devops/Ansible/group_vars/all/vars.yml.tmp > /dev/null 2>&1
+                             devops/Ansible/group_vars/all/vars.yml.tmp
                         """
                         sh "rm -f vault_pass.txt devops/Ansible/group_vars/all/vars.yml.tmp"
                         
