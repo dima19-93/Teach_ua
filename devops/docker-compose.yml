@@ -1,0 +1,68 @@
+services:
+
+  db:
+    image: mariadb:10.11
+    container_name: teachua-db
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: rootpassword
+      MARIADB_DATABASE: teachua
+      MARIADB_USER: teachua_user
+      MARIADB_PASSWORD: teachua_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./init-db/data.sql:/docker-entrypoint-initdb.d/data.sql:ro
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: teachua-backend
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - JDBC_DRIVER=org.mariadb.jdbc.Driver
+      - DATASOURCE_URL=jdbc:mariadb://db:3306/teachua?useUnicode=true&characterEncoding=UTF-8
+      - DATASOURCE_USER=teachua_user
+      - DATASOURCE_PASSWORD=teachua_password
+      - SPRING_SECURITY_CSRF_ENABLED=false
+      - SPRING_SUB_SECURITY_ENABLED=false
+    entrypoint:
+      - "java"
+      - "-jar"
+      - "app.war"
+      - "--spring.security.csrf.enabled=false"
+      - "--management.security.enabled=false"
+      - "--spring.security.ignored=/static/**,/dev/static/**"
+    depends_on:
+      db:
+        condition: service_healthy
+
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: teachua-frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_ROOT_SERVER=http://${VAGRANT_IP}:8080/dev
+      - REACT_APP_GOOGLE_MAPS_API_KEY=${GOOGLE_KEY}
+    depends_on:
+      - backend
+
+volumes:
+  mariadb_data:
+
+

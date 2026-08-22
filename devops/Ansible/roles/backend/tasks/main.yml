@@ -1,0 +1,17 @@
+- name: Copy backend .war
+  copy:
+    src: "{{ project_path }}/backend/target/dev.war"
+    dest: "{{ deploy_path }}/backend/target/dev.war"
+
+
+- name: Deploy systemd service
+  template:
+    src: "{{ service_template }}"
+    dest: "{{ service_dest }}"
+  notify: Restart backend
+
+- name: Enable and start backend service
+  systemd:
+    name: teachua-backend
+    enabled: true
+    state: started

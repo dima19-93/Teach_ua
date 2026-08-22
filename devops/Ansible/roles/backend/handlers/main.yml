@@ -1,0 +1,7 @@
+- name: Restart backend
+  systemd:
+    name: teachua-backend.service
+    state: restarted
+    enabled: true
+    daemon_reload: true
+  become: true

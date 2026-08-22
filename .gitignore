@@ -1,0 +1,10 @@
+devops/.env
+devops/.env.*
+.env
+.env.*
+.vagrant/
+frontend/.eslintcache
+.eslintcache
+**/node_modules/
+$(cat .gitignore)
+devops/Ansible/group_vars/all/vars.yml

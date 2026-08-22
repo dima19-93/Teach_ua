@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+ 
+    environment {
+    
+      INVENTORY_FILE = 'devops/Ansible/hosts.ini'
+      PLAYBOOK_FILE  = 'devops/Ansible/playbook.yml'
+      SSH_CRED_ID    = 'target-servers-ssh-key'
+   
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                
+                checkout scm
+            }
+        }
+
+
+        stage('Ansible Lint & Syntax Check') {
+            steps {
+                
+                sh "ansible-playbook -i ${env.INVENTORY_FILE} ${env.PLAYBOOK_FILE} --syntax-check"
+            }
+        }
+
+
+        stage('Ansible Deploy') {
+            steps {
+                
+                env.ANSIBLE_HOST_KEY_CHECKING = 'False'
+                env.ANSIBLE_ROLES_PATH        = 'devops/Ansible/roles'
+
+
+                ansiblePlaybook(
+                    playbook: "${env.PLAYBOOK_FILE}",
+                    inventory: "${env.INVENTORY_FILE}",
+                    credentialsId: "${env.SSH_CRED_ID}",
+
+                    extraVars: [
+                        jenkins_build_num: "${env.BUILD_NUMBER}",
+                        jenkins_job_name: "${env.JOB_NAME}",
+                        deploy_env: "production"
+                    ]
+                )
+            }
+        }
+    }
+
+    post {
+        always {
+            
+            cleanWs()
+        }
+    }
+}

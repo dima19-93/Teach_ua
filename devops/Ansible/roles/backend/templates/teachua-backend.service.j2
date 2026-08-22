@@ -1,0 +1,24 @@
+[Unit]
+Description=TeachUA Java Backend Service
+After=network.target
+
+[Service]
+Type=simple
+User=adminserver
+WorkingDirectory=/var/www/teachua/backend
+
+
+
+Environment="JDBC_DRIVER={{ jdbc_driver }}"
+Environment="DATASOURCE_URL={{ datasource_url }}"
+Environment="DATASOURCE_USER={{ datasource_user }}"
+Environment="DATASOURCE_PASSWORD={{ datasource_password }}" 
+ExecStart=/usr/bin/java -jar /var/www/teachua/backend/target/dev.war --server.address=0.0.0.0 --server.port=8080
+
+Restart=always
+RestartSec=10
+TimeoutStartSec=60
+
+[Install]
+WantedBy=multi-user.target
+

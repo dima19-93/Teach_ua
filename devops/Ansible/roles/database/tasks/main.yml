@@ -1,0 +1,37 @@
+- name: Install MariaDB
+  apt:
+    name: mariadb-server
+    state: present
+  notify: Restart mariadb
+
+- name: Clone Teach_ua repository
+  git:
+    repo: "https://github.com/dima19-93/Teach_ua.git"
+    dest: "{{ project_path }}"
+    version: main
+
+- name: Create database
+  mysql_db:
+    name: "{{ mysql_db_name }}"
+    state: present
+    encoding: utf8
+    collation: utf8_bin
+    login_user: root
+    login_unix_socket: "{{ mysql_socket_path }}"
+
+- name: Check if database exists
+  become: true
+  command: >
+    mysql -u root --socket={{ mysql_socket_path }} -e "SHOW DATABASES LIKE '{{ db_name }}';"
+  register: db_check
+  changed_when: false
+  failed_when: false
+
+- name: Import initial schema
+  mysql_db:
+    name: "{{ db_name }}"
+    state: import
+    target: "{{ db_schema_file }}"
+    login_user: root
+    login_unix_socket: "{{ mysql_socket_path }}"
+  when: db_check.stdout == ""

@@ -1,0 +1,61 @@
+- name: Install system Node.js and npm
+  apt:
+    name:
+      - nodejs
+      - npm
+    state: present
+    update_cache: yes
+
+- name: Install PM2 globally to run app in background
+  npm:
+    name: pm2
+    global: yes
+
+- name: Install frontend dependencies
+  command: npm install
+  args:
+    chdir: "{{ deploy_path }}/frontend"
+
+
+- name: Fix API root server path in ApplicationConfig
+  shell: sed -i 's/\bROOT_SERVER\b/""/g' src/config/ApplicationConfig.js
+  args:
+    chdir: "{{ deploy_path }}/frontend"
+
+
+- name: Fix relative paths to static files
+  shell: find src/ -type f -name "*.js" -o -name "*.jsx" | xargs sed -i 's|src="dev/static/|src="/dev/static/|g'
+  args:
+    chdir: "{{ deploy_path }}/frontend"
+
+- name: Stop existing PM2 process if running
+  command: pm2 delete teachua-frontend
+  ignore_errors: yes
+
+- name: Start frontend in development mode via PM2
+  command: pm2 start npm --name "teachua-frontend" --cwd "{{ deploy_path }}/frontend" -- start
+  environment:
+    DISABLE_ESLINT_PLUGIN: "true"
+    CI: "false"
+    NODE_OPTIONS: "--openssl-legacy-provider"
+
+- name: Configure Nginx as reverse proxy to Dev Server
+  template:
+    src: nginx.conf.j2
+    dest: "{{ nginx_conf_dest }}"
+  notify: Restart nginx
+
+- name: Enable Nginx site
+  file:
+    src: "{{ nginx_conf_dest }}"
+    dest: "{{ nginx_sites_enabled }}"
+    state: link
+
+- name: Generate PM2 startup script for systemd
+  shell: pm2 startup systemd -u root --hp /root
+  register: pm2_startup_result
+  changed_when: "'Command to restore' in pm2_startup_result.stdout"
+
+- name: Save current PM2 processes to resurrect on reboot
+  command: pm2 save
+  changed_when: true
