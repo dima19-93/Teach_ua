@@ -22,11 +22,12 @@ pipeline {
 
         stage('Ansible Deploy') {
             steps {
-                env.ANSIBLE_HOST_KEY_CHECKING = 'False'
-                env.ANSIBLE_ROLES_PATH        = 'devops/Ansible/roles'
-
                 withCredentials([string(credentialsId: 'ansible-vars-file', variable: 'SECRET_VARS_CONTENT')]) {
                     script {
+                        
+                        env.ANSIBLE_HOST_KEY_CHECKING = 'False'
+                        env.ANSIBLE_ROLES_PATH        = 'devops/Ansible/roles'
+
                         sh "mkdir -p devops/Ansible/group_vars/all"
                         writeFile file: 'devops/Ansible/group_vars/all/vars.yml', text: env.SECRET_VARS_CONTENT
                     }
