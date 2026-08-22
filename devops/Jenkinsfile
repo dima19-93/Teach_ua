@@ -32,26 +32,33 @@ pipeline {
                 env.ANSIBLE_HOST_KEY_CHECKING = 'False'
                 env.ANSIBLE_ROLES_PATH        = 'devops/Ansible/roles'
 
+                withCredentials([string(credentialsId: 'ansible-vars-file', variable: 'SECRET_VARS_CONTENT')]) {
+                    script {
+                        
+                        sh "mkdir -p devops/Ansible/group_vars/all"
+                        writeFile file: 'devops/Ansible/group_vars/all/vars.yml', text: env.SECRET_VARS_CONTENT
 
-                ansiblePlaybook(
-                    playbook: "${env.PLAYBOOK_FILE}",
-                    inventory: "${env.INVENTORY_FILE}",
-                    credentialsId: "${env.SSH_CRED_ID}",
+                    }                 
 
-                    extraVars: [
-                        jenkins_build_num: "${env.BUILD_NUMBER}",
-                        jenkins_job_name: "${env.JOB_NAME}",
-                        deploy_env: "production"
-                    ]
-                )
-            }
-        }
-    }
+                    ansiblePlaybook(
+                        playbook: "${env.PLAYBOOK_FILE}",
+                        inventory: "${env.INVENTORY_FILE}",
+                        credentialsId: "${env.SSH_CRED_ID}",
 
-    post {
-        always {
+                        extraVars: [
+                            jenkins_build_num: "${env.BUILD_NUMBER}",
+                            jenkins_job_name: "${env.JOB_NAME}",
+                            deploy_env: "production"
+                        ]
+                    )
+               }
+           }
+       }
+
+       post {
+           always {
             
-            cleanWs()
+               cleanWs()
         }
     }
 }
