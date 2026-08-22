@@ -34,12 +34,17 @@ pipeline {
                         
                         sh "mkdir -p devops/Ansible/group_vars/all"
                         writeFile file: 'devops/Ansible/group_vars/all/vars.yml', text: env.SECRET_VARS_CONTENT
-                        
-                        
                         writeFile file: 'vault_pass.txt', text: env.VAULT_PASS
                         
+                        sh """
+                             ansible-vault decrypt \
+                             --vault-password-file=vault_pass.txt \
+                             --output=devops/Ansible/group_vars/all/vars.yml \
+                             devops/Ansible/group_vars/all/vars.yml.tmp > /dev/null 2>&1
+                        """
+                        sh "rm -f vault_pass.txt devops/Ansible/group_vars/all/vars.yml.tmp"
                         
-                        env.ANSIBLE_VAULT_PASSWORD_FILE = "${workspace}/vault_pass.txt"
+                        
                     }
 
                     ansiblePlaybook(
