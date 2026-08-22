@@ -22,21 +22,31 @@ pipeline {
 
         stage('Ansible Deploy') {
             steps {
-                withCredentials([string(credentialsId: 'ansible-vars-file', variable: 'SECRET_VARS_CONTENT')]) {
+                
+                withCredentials([
+                    string(credentialsId: 'ansible-vars-file', variable: 'SECRET_VARS_CONTENT'),
+                    string(credentialsId: 'ansible-vault-password', variable: 'VAULT_PASS')
+                ]) {
                     script {
-                        
                         env.ANSIBLE_HOST_KEY_CHECKING = 'False'
                         env.ANSIBLE_ROLES_PATH        = 'devops/Ansible/roles'
-
+                        
+                        
                         sh "mkdir -p devops/Ansible/group_vars/all"
                         writeFile file: 'devops/Ansible/group_vars/all/vars.yml', text: env.SECRET_VARS_CONTENT
+                        
+                        
+                        writeFile file: 'vault_pass.txt', text: env.VAULT_PASS
+                        
+                        
+                        env.ANSIBLE_VAULT_PASSWORD_FILE = "${workspace}/vault_pass.txt"
                     }
 
                     ansiblePlaybook(
                         playbook: "${env.PLAYBOOK_FILE}",
                         inventory: "${env.INVENTORY_FILE}",
                         credentialsId: "${env.SSH_CRED_ID}",
-                        vaultCredentialsId: 'ansible-vault-password',
+                        
                         extraVars: [
                             jenkins_build_num: "${env.BUILD_NUMBER}",
                             jenkins_job_name: "${env.JOB_NAME}",
