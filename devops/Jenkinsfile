@@ -23,15 +23,15 @@ pipeline {
         stage('Ansible Deploy') {
             steps {
                 
-                withCredentials([file(credentialsId: 'ansible-vars-file', variable: 'VARS_FILE_PATH')]) {
+                withCredentials([
+                    file(credentialsId: 'ansible-vars-file', variable: 'VARS_FILE_PATH'),
+                    string(credentialsId: 'sudo-password', variable: 'SUDO_PASS')
+                ]) {
                     script {
                         env.ANSIBLE_HOST_KEY_CHECKING = 'False'
                         env.ANSIBLE_ROLES_PATH        = 'devops/Ansible/roles'
                         
-                        
                         sh "mkdir -p devops/Ansible/group_vars/all"
-                        
-                        
                         sh "cp \${VARS_FILE_PATH} devops/Ansible/group_vars/all/vars.yml"
                     }
 
@@ -44,6 +44,7 @@ pipeline {
                             jenkins_build_num: "${env.BUILD_NUMBER}",
                             jenkins_job_name: "${env.JOB_NAME}",
                             deploy_env: "production"
+                            ansible_become_password: "${SUDO_PASS}" 
                         ]
                     )
                 }
