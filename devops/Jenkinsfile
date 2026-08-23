@@ -30,19 +30,15 @@ pipeline {
                     script {
                         env.ANSIBLE_HOST_KEY_CHECKING = 'False'
                         env.ANSIBLE_ROLES_PATH        = 'devops/Ansible/roles'
+             
                         
                         
                         sh "mkdir -p devops/Ansible/group_vars/all"
-                        writeFile file: 'devops/Ansible/group_vars/all/vars.yml', text: env.SECRET_VARS_CONTENT
+                        writeFile file: 'vars.yml.tmp', text: env.SECRET_VARS_CONTENT
                         writeFile file: 'vault_pass.txt', text: env.VAULT_PASS
                         
-                        sh """
-                             ansible-vault decrypt \
-                             --vault-password-file=vault_pass.txt \
-                             --output=devops/Ansible/group_vars/all/vars.yml \
-                             devops/Ansible/group_vars/all/vars.yml.tmp
-                        """
-                        sh "rm -f vault_pass.txt devops/Ansible/group_vars/all/vars.yml.tmp"
+                        sh "ansible-vault decrypt --vault-password-file=vault_pass.txt --output=devops/Ansible/group_vars/all/vars.yml vars.yml.tmp"
+                        sh "rm -f vault_pass.txt vars.yml.tmp"
                         
                         
                     }
