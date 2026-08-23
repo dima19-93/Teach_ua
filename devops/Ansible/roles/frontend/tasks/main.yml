@@ -1,3 +1,12 @@
+- name: Copy fresh frontend code from Jenkins workspace to target VM
+  ansible.builtin.copy:
+    src: "../../../../../frontend"
+    dest: "{{ deploy_path }}/"
+    owner: adminserver
+    group: adminserver
+    mode: '0755'
+  become: true
+
 - name: Install system Node.js and npm
   apt:
     name:
