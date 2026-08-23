@@ -25,6 +25,12 @@
   args:
     chdir: "{{ deploy_path }}/frontend"
 
+- name: Ensure correct version of http-proxy-middleware is installed
+  command: npm install http-proxy-middleware@2.0.6
+  args:
+    chdir: "{{ deploy_path }}/frontend"
+  become: true
+
 
 - name: Fix API root server path in ApplicationConfig
   shell: sed -i 's/\bROOT_SERVER\b/""/g' src/config/ApplicationConfig.js
@@ -86,4 +92,12 @@
 
 - name: Save current PM2 processes to resurrect on reboot
   command: pm2 save
+  become: true
   changed_when: true
+
+- name: Ensure PM2 startup service is enabled
+  ansible.builtin.systemd:
+    name: pm2-root
+    enabled: true
+  become: true
+  ignore_errors: yes
