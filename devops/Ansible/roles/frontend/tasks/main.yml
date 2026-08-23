@@ -56,6 +56,25 @@
   register: pm2_startup_result
   changed_when: "'Command to restore' in pm2_startup_result.stdout"
 
+- name: Remove old application code from memory (PM2)
+  command: pm2 delete teachua-frontend
+  become: true
+  ignore_errors: yes
+
+- name: Clean React dev cache directory to force update
+  file:
+    path: "/var/www/teachua/frontend/node_modules/.cache"
+    state: absent
+  become: true
+
+- name: Fresh start frontend process via PM2 with new code
+  command: pm2 start npm --name "teachua-frontend" --cwd "/var/www/teachua/frontend" -- start
+  become: true
+  environment:
+    DISABLE_ESLINT_PLUGIN: "true"
+    CI: "false"
+    NODE_OPTIONS: "--openssl-legacy-provider"
+
 - name: Save current PM2 processes to resurrect on reboot
   command: pm2 save
   changed_when: true
