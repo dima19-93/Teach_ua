@@ -15,22 +15,23 @@ pipeline {
         }
         
         
+        // Стадія: Сканування та аналіз безпеки коду в SonarCloud
         stage('SonarCloud Analysis') {
-            tools {
-                // Використовуємо тип інструменту, який вимагає Jenkins
-                "hudson.plugins.sonar.SonarRunnerInstallation" 'sonar-scanner'
-            }
             steps {
-                // Викликаємо налаштований сервер SonarCloud
-                withSonarQubeEnv('SonarCloud') {
-                    // Запуск сканера. Замінюємо YOUR_PROJECT_KEY та YOUR_ORG_KEY на дані з кабінету SonarCloud
-                    sh """
-                        sonar-scanner \
-                        -Dsonar.projectKey=dima19-93_Teach_ua \
-                        -Dsonar.organization=dima19-93 \
-                        -Dsonar.sources=. \
-                        -Dsonar.host.url=https://sonarcloud.io
-                    """
+                script {
+                    // Змушуємо Jenkins автоматично знайти та підготувати утиліту сканера
+                    def scannerHome = tool name: 'sonar-scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+                
+                    // Викликаємо налаштований сервер SonarCloud
+                    withSonarQubeEnv('SonarCloud') {
+                        // Запуск сканування коду з явним зазначенням шляху до бінарника
+                        sh """
+                            ${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=dima19-93_Teach_ua \
+                            -Dsonar.organization=dima19-93 \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=https://sonarcloud.io
+                    }   """
                 }
             }
         }
