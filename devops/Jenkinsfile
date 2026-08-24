@@ -25,15 +25,17 @@ pipeline {
                         // Jenkins автоматично готує сканер із системних налаштувань Tools
                         def scannerHome = tool name: 'sonar-scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
                         
-                        // Запуск сканування НАПРЯМУ без блоку withSonarQubeEnv, щоб уникнути затирання токена
-                        sh """
-                            ${scannerHome}/bin/sonar-scanner \
-                            -Dsonar.projectKey=dima19-93_Teach_ua \
-                            -Dsonar.organization=dima19-93 \
-                            -Dsonar.sources=. \
-                            -Dsonar.host.url=https://sonarcloud.io \
-                            -Dsonar.token=${env.MY_SONAR_TOKEN}
-                        """
+                        // Загортаємо виконання у блок з явним прокиданням змінної оточення
+                        withEnv(["SONAR_TOKEN=${env.SONAR_TOKEN}"]) {
+                            sh """
+                                ${scannerHome}/bin/sonar-scanner \
+                                -Dsonar.projectKey=dima19-93_Teach_ua \
+                                -Dsonar.organization=dima19-93 \
+                                -Dsonar.sources=. \
+                                -Dsonar.host.url=https://sonarcloud.io \
+                                -Dsonar.token=${env.SONAR_TOKEN}
+                            """
+                        }
                     }
                 }
             }
