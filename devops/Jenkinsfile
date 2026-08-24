@@ -1,6 +1,7 @@
 pipeline {
     agent any
 
+    // Глобальні змінні оточення для шляхів до файлів та деплою
     environment {
         INVENTORY_FILE = 'devops/Ansible/hosts.ini'
         PLAYBOOK_FILE  = 'devops/Ansible/playbook.yml'
@@ -8,65 +9,73 @@ pipeline {
     }
 
     stages {
+        // Стадія 1: Завантаження коду з GitHub репозиторію
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
-        
-        
-        // Стадія: Сканування та аналіз безпеки коду в SonarCloud
+
+        // Стадія 2: Сканування та аналіз безпеки коду в SonarCloud
         stage('SonarCloud Analysis') {
             steps {
                 script {
-                    // Змушуємо Jenkins автоматично знайти та підготувати утиліту сканера
+                    // Jenkins автоматично знайде та підготує сканер із системних налаштувань Tools
                     def scannerHome = tool name: 'sonar-scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-                
-                    // Викликаємо налаштований сервер SonarCloud
+                    
+                    // Виклик налаштованого підключення до сервера SonarCloud у системі
                     withSonarQubeEnv('SonarCloud') {
-                        // Запуск сканування коду з явним зазначенням шляху до бінарника
+                        // Запуск сканування коду з ключами проекту та організації
                         sh """
                             ${scannerHome}/bin/sonar-scanner \
                             -Dsonar.projectKey=dima19-93_Teach_ua \
                             -Dsonar.organization=dima19-93 \
                             -Dsonar.sources=. \
                             -Dsonar.host.url=https://sonarcloud.io
-                    }   """
+                        """
+                    }
                 }
             }
         }
 
+        // Стадія 3: Перевірка синтаксису плейбуків Ansible перед деплоєм
         stage('Ansible Lint & Syntax Check') {
             steps {
                 sh "ansible-playbook -i ${env.INVENTORY_FILE} ${env.PLAYBOOK_FILE} --syntax-check"
             }
         }
 
+        // Стадія 4: Безпечне розгортання секретів та запуск деплою
         stage('Ansible Deploy') {
             steps {
-                
+                // Одночасно витягуємо Secret file (конфіг) та Secret text (пароль sudo)
                 withCredentials([
                     file(credentialsId: 'ansible-vars-file', variable: 'VARS_FILE_PATH'),
                     string(credentialsId: 'sudo-password', variable: 'SUDO_PASS')
                 ]) {
                     script {
+                        // Налаштування поведінки Ansible всередині раннера
                         env.ANSIBLE_HOST_KEY_CHECKING = 'False'
                         env.ANSIBLE_ROLES_PATH        = 'devops/Ansible/roles'
                         
+                        // Створюємо цільову директорію для групових змінних
                         sh "mkdir -p devops/Ansible/group_vars/all"
+                        
+                        // Копіюємо секретний файл із тимчасової папки Jenkins у структуру Ansible
                         sh "cp \${VARS_FILE_PATH} devops/Ansible/group_vars/all/vars.yml"
                     }
 
+                    // Запуск плейбука з передачею паролів та метаданих збірки
                     ansiblePlaybook(
                         playbook: "${env.PLAYBOOK_FILE}",
                         inventory: "${env.INVENTORY_FILE}",
                         credentialsId: "${env.SSH_CRED_ID}",
-                        vaultCredentialsId: 'ansible-vault-password',
+                        vaultCredentialsId: 'ansible-vault-password', // ID пароля від Ansible Vault
                         extraVars: [
                             "jenkins_build_num": "${env.BUILD_NUMBER}",
                             "jenkins_job_name" : "${env.JOB_NAME}",
                             "deploy_env"       : "production",
-                            "ansible_become_password": "${SUDO_PASS}"
+                            "ansible_become_password": "${SUDO_PASS}" // Пароль для виконання become: true
                         ]
                     )
                 }
@@ -74,9 +83,10 @@ pipeline {
         }
     }
 
+    // Пост-дії: очищення робочого простору після будь-якого результату збірки
     post {
         always {
-            cleanWs()
+            cleanWs() // Видаляє тимчасові файли та копії секретів з диска раннера
         }
     }
 }
