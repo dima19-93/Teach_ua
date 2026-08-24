@@ -13,6 +13,27 @@ pipeline {
                 checkout scm
             }
         }
+        
+        
+        stage('SonarCloud Analysis') {
+            tools {
+                // Утиліта автоматично завантажується з налаштувань Manage Jenkins -> Tools
+                string/tool name: 'sonar-scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+            }
+            steps {
+                // Викликаємо налаштований сервер SonarCloud
+                withSonarQubeEnv('SonarCloud') {
+                    // Запуск сканера. Замінюємо YOUR_PROJECT_KEY та YOUR_ORG_KEY на дані з кабінету SonarCloud
+                    sh """
+                        sonar-scanner \
+                        -Dsonar.projectKey=dima19-93_Teach_ua \
+                        -Dsonar.organization=dima19-93 \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=https://sonarcloud.io
+                    """
+                }
+            }
+        }
 
         stage('Ansible Lint & Syntax Check') {
             steps {
