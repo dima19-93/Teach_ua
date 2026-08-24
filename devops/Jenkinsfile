@@ -17,8 +17,8 @@ pipeline {
         
         stage('SonarCloud Analysis') {
             tools {
-                // Використовуємо стандартний ідентифікатор плагіна та ім'я 'sonar-scanner', яке прописали в Manage Jenkins -> Tools
-                sonarRunner 'sonar-scanner'
+                // Використовуємо тип інструменту, який вимагає Jenkins
+                "hudson.plugins.sonar.SonarRunnerInstallation" 'sonar-scanner'
             }
             steps {
                 // Викликаємо налаштований сервер SonarCloud
