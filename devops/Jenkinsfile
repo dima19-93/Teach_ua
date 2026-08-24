@@ -19,21 +19,24 @@ pipeline {
         // Стадія 2: Сканування та аналіз безпеки коду в SonarCloud
         stage('SonarCloud Analysis') {
             steps {
-                script {
-                    // Jenkins автоматично знайде та підготує сканер із системних налаштувань Tools
-                    def scannerHome = tool name: 'sonar-scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+                // Витягуємо наш збережений токен із Credentials Jenkins
+                withCredentials([string(credentialsId: 'sonarcloud-token', variable: 'SONAR_TOKEN')]) {
+                     script {
+                         // Jenkins автоматично знайде та підготує сканер із системних налаштувань Tools
+                         def scannerHome = tool name: 'sonar-scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
                     
-                    // Виклик налаштованого підключення до сервера SonarCloud у системі
-                    withSonarQubeEnv('SonarCloud') {
-                        // Запуск сканування коду з ключами проекту та організації
-                        sh """
-                            ${scannerHome}/bin/sonar-scanner \
-                            -Dsonar.projectKey=dima19-93_Teach_ua \
-                            -Dsonar.organization=dima19-93 \
-                            -Dsonar.sources=. \
-                            -Dsonar.host.url=https://sonarcloud.io
-                        """
-                    }
+                         // Виклик налаштованого підключення до сервера SonarCloud у системі
+                         withSonarQubeEnv('SonarCloud') {
+                             // Запуск сканування коду з ключами проекту та організації
+                             sh """
+                                 ${scannerHome}/bin/sonar-scanner \
+                                 -Dsonar.projectKey=dima19-93_Teach_ua \
+                                 -Dsonar.organization=dima19-93 \
+                                 -Dsonar.sources=. \
+                                 -Dsonar.host.url=https://sonarcloud.io
+                                 -Dsonar.token=${env.SONAR_TOKEN}
+                         }   """
+                     }
                 }
             }
         }
