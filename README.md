@@ -39,22 +39,22 @@
 
 ### Досягнуті результати
 
-![Vagrant SSH: підготовлене віртуальне середовище](./images/599f2da7-0dd5-44d7-a802-f0766a9e12c3.png)
+![Vagrant SSH: підготовлене віртуальне середовище](./Images/599f2da7-0dd5-44d7-a802-f0766a9e12c3.png)  
 *Vagrant SSH: підготовлене віртуальне середовище*
 
-![Docker ps: запущені контейнери TeachUA](./images/80787e3e-9aca-4d67-a830-84a5f6e60e54.png)
+![Docker ps: запущені контейнери TeachUA](./Images/80787e3e-9aca-4d67-a830-84a5f6e60e54.png)  
 *Docker ps: запущені контейнери TeachUA*
 
-![Frontend: сторінка TeachUA](./images/11db0db1-7deb-40a6-9451-7abf03f18cea.png)
+![Frontend: сторінка TeachUA](./Images/11db0db1-7deb-40a6-9451-7abf03f18cea.png)  
 *Frontend: сторінка TeachUA*
 
-![Backend API: /dev/api/cities](./images/bf1e5e87-2e45-4c98-ad68-1485ce3a361c.png)
+![Backend API: /dev/api/cities](./Images/bf1e5e87-2e45-4c98-ad68-1485ce3a361c.png)  
 *Backend API: /dev/api/cities*
 
-![Docker logs: teachua-backend](./images/532fcbf6-068d-481f-8532-678cf236b7fe.png)
+![Docker logs: teachua-backend](./Images/532fcbf6-068d-481f-8532-678cf236b7fe.png)  
 *Docker logs: teachua-backend (успішні запити та cities)*
 
-![Frontend: вибір міста](./images/952aa2d0-3568-499e-8e2f-e76523528a81.png)
+![Frontend: вибір міста](./Images/952aa2d0-3568-499e-8e2f-e76523528a81.png)  
 *Frontend: вибір міста (дані з API/БД)*
 
 - Створено та успішно підготовлено базову операційну систему у віртуальному середовищі з розгорнутим середовищем виконання контейнерів.
