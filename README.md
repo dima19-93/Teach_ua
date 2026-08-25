@@ -56,13 +56,13 @@
 ![Frontend: сторінка TeachUA](./images/frontend.png)  
 *Frontend: сторінка TeachUA*
 
-![Backend API: відповідь сервера у форматі JSON](./images/backend_api.png)  
+![Backend API: відповідь сервера у форматі JSON](./images/backend.png)  
 *Backend API: успішний запит до ендпоінту /dev/api/cities (отримання списку міст у форматі JSON)*
 
 ![Docker logs: teachua-backend](./images/dockerlogs.png)  
 *Docker logs: teachua-backend (успішні запити та cities)*
 
-![Frontend: головна сторінка TeachUA та вибір міста](./images/frontend_cities.png)  
+![Frontend: головна сторінка TeachUA та вибір міста](./images/listcities.png)  
 *Frontend: головна сторінка веб-додатка TeachUA (візуалізація списку міст, отриманих з БД)*
 
 - Створено та успішно підготовлено базову операційну систему у віртуальному середовищі з розгорнутим середовищем виконання контейнерів.
