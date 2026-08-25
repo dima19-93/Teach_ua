@@ -38,6 +38,14 @@
   - **Frontend (React):** налаштовано збірку застосунку з передачею аргументу `REACT_APP_ROOT_SERVER`, який використовує системну змінну `${VAGRANT_IP}` для автоматичного підключення фронтенду до бекенда.
 
 ### Досягнуті результати
+![Maven Build: успішна збірка проекту та проходження тестів](./images/maven_build.png)  
+*Maven Build: успішна збірка проекту та проходження тестів (BUILD SUCCESS)*
+
+![Backend Start: успішний запуск Spring Boot додатка](./images/backend_start.png)  
+*Backend Start: успішний запуск Spring Boot додатка на порту 8080 (context path '/dev')*
+
+![MySQL Status: активний та запущений стан бази даних](./images/mysql_status.png)  
+*MySQL Status: перевірка працездатності СУБД MySQL Community Server (Active: active (running))*
 
 ![Vagrant SSH: підготовлене віртуальне середовище](./images/vagrant.png)  
 *Vagrant SSH: підготовлене віртуальне середовище*
