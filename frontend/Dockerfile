@@ -3,7 +3,7 @@ WORKDIR /app
 
 COPY package*.json ./
 RUN npm install
-RUN npm install http-proxy-middleware@2
+RUN npm install http-proxy-middleware@2.1.3
 
 COPY . .
 
