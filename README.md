@@ -50,6 +50,9 @@
 ![Vagrant SSH: підготовлене віртуальне середовище](./images/vagrant.png)  
 *Vagrant SSH: підготовлене віртуальне середовище*
 
+![Frontend: сторінка TeachUA](./images/frontend.png)  
+*Frontend: сторінка TeachUA (головна сторінка та вибір міста)*
+
 ![Docker ps: запущені контейнери TeachUA](./images/dockercompose.png)  
 *Docker ps: запущені контейнери TeachUA*
 
