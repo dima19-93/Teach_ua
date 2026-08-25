@@ -4,7 +4,7 @@
     dest: "{{ deploy_path }}/"
     owner: adminserver
     group: adminserver
-    mode: '0755'
+    mode: '0750'
   become: true
 
 - name: Install system Node.js and npm
