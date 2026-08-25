@@ -56,14 +56,14 @@
 ![Frontend: сторінка TeachUA](./images/frontend.png)  
 *Frontend: сторінка TeachUA*
 
-![Backend API: /dev/api/cities](./images/listcities.png)  
-*Backend API: /dev/api/cities*
+![Backend API: відповідь сервера у форматі JSON](./images/backend_api.png)  
+*Backend API: успішний запит до ендпоінту /dev/api/cities (отримання списку міст у форматі JSON)*
 
 ![Docker logs: teachua-backend](./images/dockerlogs.png)  
 *Docker logs: teachua-backend (успішні запити та cities)*
 
-![Frontend: вибір міста](./images/backend.png)  
-*Frontend: вибір міста (дані з API/БД)*
+![Frontend: головна сторінка TeachUA та вибір міста](./images/frontend_cities.png)  
+*Frontend: головна сторінка веб-додатка TeachUA (візуалізація списку міст, отриманих з БД)*
 
 - Створено та успішно підготовлено базову операційну систему у віртуальному середовищі з розгорнутим середовищем виконання контейнерів.
 - Зв’язок між Backend та Database: за логами контейнера **teachua-backend** підтверджено успішну взаємодію між сервісами. Додаток без помилок підключається до MariaDB та динамічно вичитує дані (наприклад, структуровані списки міст із гео-координатами), що доводить коректність ініціалізації схеми БД.
