@@ -43,9 +43,9 @@ pipeline {
      
         stage('Build Docker Image') {
             steps {
-                echo '=== Building Docker Image for Testing ==='
+                echo '=== Building Production Docker Image ==='
                 
-                sh 'docker build -t teach-ua-frontend:test ./frontend'
+                sh 'docker build -t dima70593/teach-ua-frontend:${env.BUILD_NUMBER} ./frontend'
             }
         }
 
@@ -53,7 +53,17 @@ pipeline {
             steps {
                 echo '=== Scanning Docker Image with Trivy ==='
                 
-                sh 'trivy image --severity HIGH,CRITICAL --exit-code 0 teach-ua-frontend:test'
+                sh 'trivy image --severity HIGH,CRITICAL --exit-code 0 dima70593/teach-ua-frontend:${env.BUILD_NUMBER}'
+            }
+        }
+  
+        stage('Push Image to Docker Hub') {
+            steps {
+                echo '=== Logging in and Pushing Image to Registry ==='
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                    sh 'docker push dima70593/teach-ua-frontend:${env.BUILD_NUMBER}'
+                }
             }
         }
 
