@@ -40,6 +40,22 @@ pipeline {
                 }
             }
         }
+     
+        stage('Build Docker Image') {
+            steps {
+                echo '=== Building Docker Image for Testing ==='
+                
+                sh 'docker build -t teach-ua-frontend:test ./frontend'
+            }
+        }
+
+        stage('Trivy Security Scanning') {
+            steps {
+                echo '=== Scanning Docker Image with Trivy ==='
+                
+                sh 'trivy image --severity HIGH,CRITICAL --exit-code 1 teach-ua-frontend:test'
+            }
+        }
 
         // Стадія 3: Перевірка синтаксису плейбуків Ansible перед деплоєм
         stage('Ansible Lint & Syntax Check') {
