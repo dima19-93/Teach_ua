@@ -46,6 +46,8 @@ pipeline {
                 echo '=== Building Production Docker Image ==='
                 
                 sh "docker build -t dima70593/teach-ua-frontend:${env.BUILD_NUMBER} ./frontend"
+               
+                sh "docker build -t dima70593/teach-ua-backend:${env.BUILD_NUMBER} ./backend"
             }
         }
 
@@ -54,6 +56,8 @@ pipeline {
                 echo '=== Scanning Docker Image with Trivy ==='
                 
                 sh "trivy image --severity HIGH,CRITICAL --exit-code 0 dima70593/teach-ua-frontend:${env.BUILD_NUMBER}"
+
+                sh "trivy image --severity HIGH,CRITICAL --exit-code 0 dima70593/teach-ua-backend:${env.BUILD_NUMBER}"
             }
         }
   
@@ -66,6 +70,8 @@ pipeline {
                     
                     
                     sh "docker push dima70593/teach-ua-frontend:${env.BUILD_NUMBER}"
+
+                    sh "docker push dima70593/teach-ua-backend:${env.BUILD_NUMBER}"
                 }
             }
         }
