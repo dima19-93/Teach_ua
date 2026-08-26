@@ -5,6 +5,9 @@ COPY package*.json ./
 RUN npm install
 RUN npm install http-proxy-middleware@2.0.10
 
+ARG REACT_APP_ROOT_SERVER
+ARG REACT_APP_GOOGLE_MAPS_API_KEY
+
 COPY . .
 
 

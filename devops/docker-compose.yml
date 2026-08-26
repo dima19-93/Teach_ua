@@ -31,9 +31,9 @@ services:
       - "8080:8080"
     environment:
       - JDBC_DRIVER=org.mariadb.jdbc.Driver
-      - DATASOURCE_URL=jdbc:mariadb://db:3306/teachua?useUnicode=true&characterEncoding=UTF-8
-      - DATASOURCE_USER=teachua_user
-      - DATASOURCE_PASSWORD=teachua_password
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://db:3306/teachua?useUnicode=true&characterEncoding=UTF-8
+      - SPRING_DATASOURCE_USERNAME=teachua_user
+      - SPRING_DATASOURCE_PASSWORD=teachua_password
       - SPRING_SECURITY_CSRF_ENABLED=false
       - SPRING_SUB_SECURITY_ENABLED=false
     entrypoint:
@@ -57,8 +57,13 @@ services:
     ports:
       - "3000:3000"
     environment:
+      - NODE_OPTIONS=--openssl-legacy-provider
       - REACT_APP_ROOT_SERVER=http://${VAGRANT_IP}:8080/dev
       - REACT_APP_GOOGLE_MAPS_API_KEY=${GOOGLE_KEY}
+    volumes:
+      - ./.env:/app/.env
+    stdin_open: true
+    tty: true
     depends_on:
       - backend
 
