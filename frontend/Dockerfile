@@ -10,7 +10,7 @@ COPY . .
 
 ENV DISABLE_ESLINT_PLUGIN=true
 ENV CI=false
-
+ENV REACT_APP_ROOT_SERVER=http://192.168.33.11:8080
 
 RUN sed -i 's/\bROOT_SERVER\b/""/g' src/config/ApplicationConfig.js
 

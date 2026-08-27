@@ -1,14 +1,11 @@
-- hosts: database
-  become: yes
-  roles:
-    - database
+---
+- name: Deploy Teach UA Application via Docker
+  hosts: target_server
+  become: true
 
-- hosts: backend
-  become: yes
   roles:
-    - backend
+    - role: docker_install
+    - role: db
+    - role: backend
+    - role: frontend
 
-- hosts: frontend
-  become: yes
-  roles:
-    - frontend

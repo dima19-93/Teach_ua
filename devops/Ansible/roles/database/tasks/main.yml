@@ -1,37 +1,38 @@
-- name: Install MariaDB
-  apt:
-    name: mariadb-server
-    state: present
-  notify: Restart mariadb
+---
+- name: Log in to Docker Hub
+  community.docker.docker_login:
+    username: "dima70593"
+    password: "{{ docker_hub_password }}"
 
-- name: Clone Teach_ua repository
-  git:
-    repo: "https://github.com/dima19-93/Teach_ua.git"
-    dest: "{{ project_path }}"
-    version: main
+- name: Create directory for DB init scripts on target host
+  ansible.builtin.file:
+    path: /var/lib/teachua/db_init
+    state: directory
+    mode: '0755'
 
-- name: Create database
-  mysql_db:
-    name: "{{ mysql_db_name }}"
-    state: present
-    encoding: utf8
-    collation: utf8_bin
-    login_user: root
-    login_unix_socket: "{{ mysql_socket_path }}"
 
-- name: Check if database exists
-  become: true
-  command: >
-    mysql -u root --socket={{ mysql_socket_path }} -e "SHOW DATABASES LIKE '{{ db_name }}';"
-  register: db_check
-  changed_when: false
-  failed_when: false
+- name: Copy data.sql to target VM
+  ansible.builtin.copy:
+    src: "../../../data.sql"
+    dest: /var/lib/teachua/db_init/data.sql
+    mode: '0644'
 
-- name: Import initial schema
-  mysql_db:
-    name: "{{ db_name }}"
-    state: import
-    target: "{{ db_schema_file }}"
-    login_user: root
-    login_unix_socket: "{{ mysql_socket_path }}"
-  when: db_check.stdout == ""
+- name: Run MariaDB Container
+  community.docker.docker_container:
+    name: teach-ua-db
+    image: "mariadb:10.11"
+    state: started
+    restart_policy: always
+    networks:
+      - name: teachua_network
+    published_ports:
+      - "3306:3306"
+    volumes:
+      - "/var/lib/mysql:/var/lib/mysql"
+      - "/var/lib/teachua/db_init:/docker-entrypoint-initdb.d"
+    env:
+      MYSQL_DATABASE: "teachua"
+      MYSQL_USER: "{{ db_user_from_vars }}"
+      MYSQL_PASSWORD: "{{ db_password_from_vars }}"
+      MYSQL_ROOT_PASSWORD: "{{ db_root_password_from_vars }}"
+

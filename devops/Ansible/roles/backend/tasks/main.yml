@@ -1,17 +1,26 @@
-- name: Copy backend .war
-  copy:
-    src: "{{ project_path }}/backend/target/dev.war"
-    dest: "{{ deploy_path }}/backend/target/dev.war"
+---
+- name: Remove old backend container if exists
+  community.docker.docker_container:
+    name: teach-ua-backend
+    state: absent
+  ignore_errors: yes
 
-
-- name: Deploy systemd service
-  template:
-    src: "{{ service_template }}"
-    dest: "{{ service_dest }}"
-  notify: Restart backend
-
-- name: Enable and start backend service
-  systemd:
-    name: teachua-backend
-    enabled: true
+- name: Run Backend Container
+  community.docker.docker_container:
+    name: teach-ua-backend
+    image: "dima70593/teach-ua-backend:{{ jenkins_build_num }}"
     state: started
+    restart_policy: always
+    pull: true
+    networks:
+      - name: teachua_network
+    published_ports:
+      - "8080:8080"
+
+    env:
+      JDBC_DRIVER: "org.mariadb.jdbc.Driver"
+
+      DATASOURCE_URL: "jdbc:mariadb://teach-ua-db:3306/teachua?useUnicode=true&characterEncoding=UTF-8"
+      DATASOURCE_USER: "{{ db_user_from_vars }}"
+      DATASOURCE_PASSWORD: "{{ db_password_from_vars }}"
+

@@ -1,103 +1,43 @@
-- name: Copy fresh frontend code from Jenkins workspace to target VM
-  ansible.builtin.copy:
-    src: "../../../../../frontend"
-    dest: "{{ deploy_path }}/"
-    owner: adminserver
-    group: adminserver
-    mode: '0750'
-  become: true
-
-- name: Install system Node.js and npm
-  apt:
-    name:
-      - nodejs
-      - npm
-    state: present
-    update_cache: yes
-
-- name: Install PM2 globally to run app in background
-  npm:
-    name: pm2
-    global: yes
-
-- name: Install frontend dependencies
-  command: npm install
-  args:
-    chdir: "{{ deploy_path }}/frontend"
-
-- name: Ensure correct version of http-proxy-middleware is installed
-  command: npm install http-proxy-middleware@2.0.6
-  args:
-    chdir: "{{ deploy_path }}/frontend"
-  become: true
-
-
-- name: Fix API root server path in ApplicationConfig
-  shell: sed -i 's/\bROOT_SERVER\b/""/g' src/config/ApplicationConfig.js
-  args:
-    chdir: "{{ deploy_path }}/frontend"
-
-
-- name: Fix relative paths to static files
-  shell: find src/ -type f -name "*.js" -o -name "*.jsx" | xargs sed -i 's|src="dev/static/|src="/dev/static/|g'
-  args:
-    chdir: "{{ deploy_path }}/frontend"
-
-- name: Stop existing PM2 process if running
-  command: pm2 delete teachua-frontend
+---
+- name: Stop and remove old PM2 process if still exists
+  ansible.builtin.command: pm2 delete teachua-frontend
   ignore_errors: yes
 
-- name: Start frontend in development mode via PM2
-  command: pm2 start npm --name "teachua-frontend" --cwd "{{ deploy_path }}/frontend" -- start
-  environment:
-    DISABLE_ESLINT_PLUGIN: "true"
-    CI: "false"
-    NODE_OPTIONS: "--openssl-legacy-provider"
 
-- name: Configure Nginx as reverse proxy to Dev Server
-  template:
+- name: Remove old frontend container
+  community.docker.docker_container:
+    name: teach-ua-frontend
+    state: absent
+  ignore_errors: yes
+
+
+- name: Run Frontend Container
+  community.docker.docker_container:
+    name: teach-ua-frontend
+    image: "dima70593/teach-ua-frontend:{{ jenkins_build_num }}"
+    state: started
+    restart_policy: always
+    pull: true
+    networks:
+      - name: teachua_network
+    published_ports:
+      - "3000:3000"
+
+
+- name: Clean up old unused Docker images to save disk space
+  ansible.builtin.shell: "docker system prune -af"
+
+
+- name: Configure Nginx as reverse proxy
+  ansible.builtin.template:
     src: nginx.conf.j2
     dest: "{{ nginx_conf_dest }}"
   notify: Restart nginx
 
+
 - name: Enable Nginx site
-  file:
+  ansible.builtin.file:
     src: "{{ nginx_conf_dest }}"
     dest: "{{ nginx_sites_enabled }}"
     state: link
 
-- name: Generate PM2 startup script for systemd
-  shell: pm2 startup systemd -u root --hp /root
-  register: pm2_startup_result
-  changed_when: "'Command to restore' in pm2_startup_result.stdout"
-
-- name: Remove old application code from memory (PM2)
-  command: pm2 delete teachua-frontend
-  become: true
-  ignore_errors: yes
-
-- name: Clean React dev cache directory to force update
-  file:
-    path: "/var/www/teachua/frontend/node_modules/.cache"
-    state: absent
-  become: true
-
-- name: Fresh start frontend process via PM2 with new code
-  command: pm2 start npm --name "teachua-frontend" --cwd "/var/www/teachua/frontend" -- start
-  become: true
-  environment:
-    DISABLE_ESLINT_PLUGIN: "true"
-    CI: "false"
-    NODE_OPTIONS: "--openssl-legacy-provider"
-
-- name: Save current PM2 processes to resurrect on reboot
-  command: pm2 save
-  become: true
-  changed_when: true
-
-- name: Ensure PM2 startup service is enabled
-  ansible.builtin.systemd:
-    name: pm2-root
-    enabled: true
-  become: true
-  ignore_errors: yes
