@@ -1,26 +1,24 @@
 ---
-- name: Install Docker prerequisites
+- name: Install python3-pip and python3-docker for Ansible modules
   ansible.builtin.apt:
     name:
-      - apt-transport-https
-      - ca-certificates
-      - curl
-      - gnupg
-      - lsb-release
       - python3-pip
       - python3-docker
     state: present
     update_cache: yes
 
-- name: Install Docker Engine
-  ansible.builtin.apt:
-    name:
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
-    state: present
+- name: Download official Docker installation script
+  ansible.builtin.get_url:
+    url: https://get.docker.com
+    dest: /tmp/get-docker.sh
+    mode: '0755'
 
-- name: Ensure Docker is started and enabled
+- name: Run Docker installation script
+  ansible.builtin.shell: /tmp/get-docker.sh
+  args:
+    creates: /usr/bin/docker
+
+- name: Ensure Docker service is started and enabled
   ansible.builtin.systemd:
     name: docker
     state: started
@@ -29,3 +27,4 @@
 - name: Create internal Docker network for app
   community.docker.docker_network:
     name: teachua_network
+
