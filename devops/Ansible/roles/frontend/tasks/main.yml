@@ -1,8 +1,11 @@
 ---
-- name: Stop and remove old PM2 process if still exists
-  ansible.builtin.command: pm2 delete teachua-frontend
+- name: Forcefully free port 3000 from any blocking process
+  ansible.builtin.shell: "fuser -k 3000/tcp || true"
   ignore_errors: yes
 
+- name: Stop any rogue docker container using port 3000
+  ansible.builtin.shell: "docker ps -q --filter publish=3000 | xargs -r docker stop"
+  ignore_errors: yes
 
 - name: Remove old frontend container
   community.docker.docker_container:
