@@ -25,6 +25,8 @@
       - name: teachua_network
     published_ports:
       - "3000:3000"
+    env:
+      NODE_OPTIONS: "--openssl-legacy-provider"
 
 
 - name: Clean up old unused Docker images to save disk space
