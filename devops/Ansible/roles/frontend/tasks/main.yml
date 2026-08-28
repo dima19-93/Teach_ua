@@ -27,6 +27,7 @@
       - "3000:3000"
     env:
       NODE_OPTIONS: "--openssl-legacy-provider"
+      REACT_APP_GOOGLE_MAPS_API_KEY: "{{ google_maps_key }}"
 
 
 - name: Clean up old unused Docker images to save disk space
