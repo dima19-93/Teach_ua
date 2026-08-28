@@ -13,7 +13,7 @@
 
 - name: Copy data.sql to target VM
   ansible.builtin.copy:
-    src: "../../../data.sql"
+    src: "{{ playbook_dir }}/../../backend/data.sql"
     dest: /var/lib/teachua/db_init/data.sql
     mode: '0644'
 
