@@ -9,14 +9,14 @@ pipeline {
     }
 
     stages {
-        // Стадія 1: Завантаження коду з GitHub
+        // Завантаження коду з GitHub
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
 
-        // Стадія 2: Сканування та аналіз безпеки коду в SonarCloud
+        // Сканування та аналіз безпеки коду в SonarCloud
         stage('SonarCloud Analysis') {
             steps {
                 // Витягуємо збережений токен із Credentials Jenkins
@@ -41,49 +41,44 @@ pipeline {
             }
         }
      
+        
         stage('Build Docker Image') {
             steps {
                 echo '=== Building Production Docker Image ==='
-                
                 sh "docker build -t dima70593/teach-ua-frontend:${env.BUILD_NUMBER} ./frontend"
-               
                 sh "docker build -t dima70593/teach-ua-backend:${env.BUILD_NUMBER} ./backend"
             }
         }
 
+        
         stage('Trivy Security Scanning') {
             steps {
                 echo '=== Scanning Docker Image with Trivy ==='
-                
                 sh "trivy image --severity HIGH,CRITICAL --exit-code 0 dima70593/teach-ua-frontend:${env.BUILD_NUMBER}"
-
                 sh "trivy image --severity HIGH,CRITICAL --exit-code 0 dima70593/teach-ua-backend:${env.BUILD_NUMBER}"
             }
         }
   
+        
         stage('Push Image to Docker Hub') {
             steps {
                 echo '=== Logging in and Pushing Image to Registry ==='
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    
                     sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
-                    
-                    
                     sh "docker push dima70593/teach-ua-frontend:${env.BUILD_NUMBER}"
-
                     sh "docker push dima70593/teach-ua-backend:${env.BUILD_NUMBER}"
                 }
             }
         }
 
-        // Стадія 3: Перевірка синтаксису плейбуків Ansible перед деплоєм
+        // Перевірка синтаксису плейбуків Ansible перед деплоєм
         stage('Ansible Lint & Syntax Check') {
             steps {
                 sh "ansible-playbook -i ${env.INVENTORY_FILE} ${env.PLAYBOOK_FILE} --syntax-check"
             }
         }
 
-        // Стадия 4: Безпечне розгортання секретів та запуск деплою через Ansible
+        // Безпечне розгортання секретів та запуск деплою через Ansible
         stage('Ansible Deploy') {
             steps {
                 // Одночасно витягуємо Secret file (конфіг) та Secret text (пароль sudo)
@@ -115,7 +110,7 @@ pipeline {
                             "jenkins_job_name" : "${env.JOB_NAME}",
                             "deploy_env"       : "production",
                             "ansible_become_password": "${SUDO_PASS}", // Пароль для виконання become: true
-                            //Прокидаємо креди Docker Hub безпосередньо в Ansible плейбук
+                            // Прокидаємо креди Docker Hub безпосередньо в Ansible плейбук
                             "docker_hub_username": "${DOCKER_USER}",
                             "docker_hub_password": "${DOCKER_PASS}"
                         ]
@@ -123,11 +118,13 @@ pipeline {
                 }
             }
         }
+    }
 
-        // Пост-дії: очищення робочого простору після будь-якого результату збірки
-        post {
-            always {
-                cleanWs() // Видаляє тимчасові файли та копії секретів з диска раннера
+    // Пост-дії: очищення робочого простору після будь-якого результату збірки
+    post {
+        always {
+            cleanWs() // Видаляє тимчасові файли та копії секретів з диска раннера
         }
     }
 }
+
