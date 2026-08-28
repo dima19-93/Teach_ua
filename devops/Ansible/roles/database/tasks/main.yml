@@ -10,7 +10,6 @@
     state: directory
     mode: '0755'
 
-
 - name: Copy data.sql to target VM
   ansible.builtin.copy:
     src: "{{ playbook_dir }}/../../backend/data.sql"
@@ -30,9 +29,10 @@
     volumes:
       - "/var/lib/mysql:/var/lib/mysql"
       - "/var/lib/teachua/db_init:/docker-entrypoint-initdb.d"
+
     env:
-      MYSQL_DATABASE: "teachua"
-      MYSQL_USER: "{{ db_user_from_vars }}"
-      MYSQL_PASSWORD: "{{ db_password_from_vars }}"
-      MYSQL_ROOT_PASSWORD: "{{ db_root_password_from_vars }}"
+      MYSQL_DATABASE: "{{ db_name }}"
+      MYSQL_USER: "{{ db_user }}"
+      MYSQL_PASSWORD: "{{ db_password }}"
+      MYSQL_ROOT_PASSWORD: "{{ mysql_root_password }}"
 

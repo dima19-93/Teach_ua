@@ -18,9 +18,8 @@
       - "8080:8080"
 
     env:
-      JDBC_DRIVER: "org.mariadb.jdbc.Driver"
-
-      DATASOURCE_URL: "jdbc:mariadb://teach-ua-db:3306/teachua?useUnicode=true&characterEncoding=UTF-8"
-      DATASOURCE_USER: "{{ db_user_from_vars }}"
-      DATASOURCE_PASSWORD: "{{ db_password_from_vars }}"
+      JDBC_DRIVER: "{{ jdbc_driver }}"
+      DATASOURCE_URL: "jdbc:mariadb://teach-ua-db:3306/{{ db_name }}?useUnicode=true&characterEncoding=UTF-8"
+      DATASOURCE_USER: "{{ db_user }}"
+      DATASOURCE_PASSWORD: "{{ db_password }}"
 
