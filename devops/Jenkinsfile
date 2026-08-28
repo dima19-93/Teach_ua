@@ -27,15 +27,7 @@ pipeline {
                         
                         // Загортаємо виконання у блок з явним прокиданням змінної оточення
                         withEnv(["SONAR_TOKEN=${env.SONAR_TOKEN}"]) {
-                            sh """
-                                ${scannerHome}/bin/sonar-scanner \
-                                -Dsonar.projectKey=dima19-93_Teach_ua \
-                                -Dsonar.organization=dima19-93 \
-                                -Dsonar.sources=. \
-                                -Dsonar.host.url=https://sonarcloud.io \
-                                -Dsonar.token=${env.SONAR_TOKEN}
-                                -Dsonar.exclusions="**/node_modules/**,**/target/**,**/dist/**,**/.cache/**,devops/**"
-                            """
+                            sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=dima19-93_Teach_ua -Dsonar.organization=dima19-93 -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.token=${env.SONAR_TOKEN} -Dsonar.exclusions='**/node_modules/**,**/target/**,**/dist/**,**/.cache/**,devops/**'"
                         }
                     }
                 }
