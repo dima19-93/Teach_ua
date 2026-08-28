@@ -35,13 +35,23 @@ pipeline {
         }
      
         
+        
         stage('Build Docker Image') {
             steps {
                 echo '=== Building Production Docker Image ==='
-                sh "docker build -t dima70593/teach-ua-frontend:${env.BUILD_NUMBER} ./frontend"
+                
+                
+                withCredentials([string(credentialsId: 'google-maps-api-key', variable: 'MAPS_KEY')]) {
+                    
+                    
+                    sh "docker build --build-arg GOOGLE_MAPS_API_KEY=${MAPS_KEY} -t dima70593/teach-ua-frontend:${env.BUILD_NUMBER} ./frontend"
+                }
+               
+                
                 sh "docker build -t dima70593/teach-ua-backend:${env.BUILD_NUMBER} ./backend"
             }
         }
+
 
         
         stage('Trivy Security Scanning') {
