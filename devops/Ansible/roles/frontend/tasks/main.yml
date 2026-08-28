@@ -1,6 +1,7 @@
 ---
 - name: Forcefully free port 3000 from any blocking process
   ansible.builtin.shell: "fuser -k 3000/tcp || true"
+  become: true
   ignore_errors: yes
 
 - name: Stop any rogue docker container using port 3000
