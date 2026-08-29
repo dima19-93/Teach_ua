@@ -9,6 +9,7 @@
     - role: backend
     - role: frontend
     - role: node_exporter
+    - role: cadvisor
 
 - name: Deploy Prometheus and Grafana to Monitoring Server
   hosts: monitoring_servers
