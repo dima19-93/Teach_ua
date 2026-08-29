@@ -1,4 +1,9 @@
 ---
+- name: Create custom Docker network for monitoring
+  community.docker.docker_network:
+    name: monitoring_network
+    state: present
+
 - name: Create Prometheus config directory
   ansible.builtin.file:
     path: /etc/prometheus
@@ -17,10 +22,24 @@
     image: prom/prometheus:v2.45.0
     state: started
     restart_policy: always
+    networks:
+      - name: monitoring_network
     published_ports:
       - "9090:9090"
     volumes:
       - /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+- name: Create Grafana provisioning directory
+  ansible.builtin.file:
+    path: /etc/grafana/provisioning/datasources
+    state: directory
+    mode: '0755'
+
+- name: Copy Grafana datasource configuration
+  ansible.builtin.copy:
+    src: grafana_datasources.yml
+    dest: /etc/grafana/provisioning/datasources/prometheus.yml
+    mode: '0644'
 
 - name: Run Grafana Container
   community.docker.docker_container:
@@ -28,5 +47,10 @@
     image: grafana/grafana:10.0.0
     state: started
     restart_policy: always
+    recreate: yes
+    networks:
+      - name: monitoring_network
     published_ports:
       - "3000:3000"
+    volumes:
+      - /etc/grafana/provisioning:/etc/grafana/provisioning
