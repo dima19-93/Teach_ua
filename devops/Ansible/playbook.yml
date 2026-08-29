@@ -8,4 +8,11 @@
     - role: database
     - role: backend
     - role: frontend
+    - role: node_exporter
 
+- name: Deploy Prometheus and Grafana to Monitoring Server
+  hosts: monitoring_servers
+  become: true
+  roles:
+    - docker_install
+    - monitoring

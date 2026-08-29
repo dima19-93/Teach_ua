@@ -1,0 +1,8 @@
+- name: Run Node Exporter Container
+  community.docker.docker_container:
+    name: node-exporter
+    image: prom/node-exporter:v1.6.0
+    state: started
+    restart_policy: always
+    published_ports:
+      - "9100:9100"

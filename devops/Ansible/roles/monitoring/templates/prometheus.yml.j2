@@ -1,0 +1,16 @@
+global:
+  scrape_interval: 15s #Як часто збирати метрики
+
+scrape_configs:
+  - job_name: 'node-exporter-app'
+    static_configs:
+      - targets: ['192.168.33.11:9100'] # IP target_server и порт сборщика
+
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'teachua-app-host'
+    static_configs:
+      - targets: ['192.168.33.11:9100']

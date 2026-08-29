@@ -1,0 +1,32 @@
+---
+- name: Create Prometheus config directory
+  ansible.builtin.file:
+    path: /etc/prometheus
+    state: directory
+    mode: '0755'
+
+- name: Copy Prometheus configuration template
+  ansible.builtin.template:
+    src: prometheus.yml.j2
+    dest: /etc/prometheus/prometheus.yml
+    mode: '0644'
+
+- name: Run Prometheus Container
+  community.docker.docker_container:
+    name: prometheus
+    image: prom/prometheus:v2.45.0
+    state: started
+    restart_policy: always
+    published_ports:
+      - "9090:9090"
+    volumes:
+      - /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+- name: Run Grafana Container
+  community.docker.docker_container:
+    name: grafana
+    image: grafana/grafana:10.0.0
+    state: started
+    restart_policy: always
+    published_ports:
+      - "3000:3000"
