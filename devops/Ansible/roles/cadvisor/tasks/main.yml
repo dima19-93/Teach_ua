@@ -20,8 +20,10 @@
       - /dev/disk/:/dev/disk:ro
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - /var/run:/var/run:rw
+      - /run/containerd/containerd.sock:/run/containerd/containerd.sock:ro
     devices:
       - /dev/kmsg
     command:
       - "--docker_only=true"
       - "--docker=unix:///var/run/docker.sock"
+      - "--containerd=/run/containerd/containerd.sock"
