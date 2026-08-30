@@ -1,16 +1,4 @@
 ---
-- name: Stop and remove old cAdvisor container
-  community.docker.docker_container:
-    name: cadvisor
-    state: absent
-
-- name: Download correct cAdvisor binary from GitHub
-  get_url:
-    url: "https://github.com/google/cadvisor/releases/download/v0.49.1/cadvisor-v0.49.1-linux-amd64"
-    dest: /usr/local/bin/cadvisor
-    mode: '0755'
-    force: yes
-
 - name: Create systemd service for cAdvisor
   copy:
     dest: /etc/systemd/system/cadvisor.service
@@ -24,21 +12,16 @@
       Type=simple
       User=root
       Group=root
+
       ExecStart=/usr/local/bin/cadvisor \
         --port=8081 \
         --docker_only=true \
         --docker=unix:///var/run/docker.sock \
-        --containerd=/run/containerd/containerd.sock
+        --runtime-containerd=/run/containerd/containerd.sock \
+        --cgroup_hierarchy=true
       Restart=always
       RestartSec=10
 
       [Install]
       WantedBy=multi-user.target
-
-- name: Reload systemd, enable and start cAdvisor service
-  systemd:
-    name: cadvisor
-    state: restarted
-    daemon_reload: yes
-    enabled: yes
 
