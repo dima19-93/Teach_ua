@@ -14,6 +14,8 @@
       - /var/lib/docker/:/var/lib/docker:ro
       - /sys:/sys:ro
       - /dev/disk/:/dev/disk:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /var/run:/var/run:ro
     devices:
       - /dev/kmsg
     command: ["--docker_only=true"]
