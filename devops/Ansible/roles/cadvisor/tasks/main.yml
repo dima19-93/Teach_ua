@@ -1,29 +1,36 @@
 ---
-- name: Run cAdvisor container
+- name: Stop and remove old cAdvisor container
   community.docker.docker_container:
     name: cadvisor
-    image: ghcr.io/google/cadvisor:v0.53.0
-    state: started
-    restart_policy: always
-    privileged: true
-    published_ports:
-      - "8081:8080"
-    user: "0:0"
-    env:
-      DOCKER_API_VERSION: "1.44"
-      CADVISOR_HEALTHCHECK_URL: "http://localhost:8080/healthz"
-    volumes:
-      - /:/rootfs:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-      - /sys:/sys:ro
-      - /dev/disk/:/dev/disk:ro
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-      - /var/run:/var/run:rw
-      - /run/containerd/containerd.sock:/run/containerd/containerd.sock:ro
-    devices:
-      - /dev/kmsg
-    command:
-      - "--docker_only=true"
-      - "--docker=unix:///var/run/docker.sock"
-      - "--containerd=/run/containerd/containerd.sock"
+    state: absent
+
+- name: Download cAdvisor binary
+  get_url:
+    url: https://github.com
+    dest: /usr/local/bin/cadvisor
+    mode: '0755'
+
+- name: Create systemd service for cAdvisor
+  copy:
+    dest: /etc/systemd/system/cadvisor.service
+    content: |
+      [Unit]
+      Description=cAdvisor Exporter
+      After=network.target docker.service containerd.service
+
+      [Service]
+      Type=simple
+      ExecStart=/usr/local/bin/cadvisor --port=8081 --docker_only=true
+      Restart=always
+      RestartSec=10
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Reload systemd, enable and start cAdvisor service
+  systemd:
+    name: cadvisor
+    state: restarted
+    daemon_reload: yes
+    enabled: yes
+
