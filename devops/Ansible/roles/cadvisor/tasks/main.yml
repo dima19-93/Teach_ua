@@ -2,7 +2,7 @@
 - name: Run cAdvisor container
   community.docker.docker_container:
     name: cadvisor
-    image: gcr.io/cadvisor/cadvisor:v0.47.5
+    image: google/cadvisor:v0.47.3
     state: started
     restart_policy: always
     privileged: true
@@ -13,14 +13,10 @@
     user: "0:0"
     volumes:
       - /:/rootfs:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-      - /sys:/sys:ro
-      - /dev/disk/:/dev/disk:ro
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - /var/run:/var/run:rw
-      - /run/containerd:/run/containerd:ro
-      - /etc/machine-id:/etc/machine-id:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
     devices:
       - /dev/kmsg
     env:
