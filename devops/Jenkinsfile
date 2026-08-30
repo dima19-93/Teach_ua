@@ -82,7 +82,8 @@ pipeline {
                 withCredentials([
                     file(credentialsId: 'ansible-vars-file', variable: 'VARS_FILE_PATH'),
                     string(credentialsId: 'sudo-password', variable: 'SUDO_PASS'),
-                    usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')
+                    usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS'),
+                    string(credentialsId: 'TELEGRAM_BOT_TOKEN', variable: 'TG_TOKEN')
                 ]) {
                     script {
                         // Налаштування поведінки Ansible всередині раннера
