@@ -4,11 +4,22 @@
     name: cadvisor
     state: absent
 
-- name: Download cAdvisor binary
+- name: Set architecture variable to amd64
+  set_fact:
+    cadvisor_arch: "amd64"
+  when: ansible_architecture == "x86_64"
+
+- name: Set architecture variable to arm64
+  set_fact:
+    cadvisor_arch: "arm64"
+  when: ansible_architecture == "aarch64" or ansible_architecture == "arm64"
+
+- name: Download correct cAdvisor binary
   get_url:
-    url: https://github.com
+    url: "https://github.com/google/cadvisor/releases/download/v0.47.0/cadvisor"
     dest: /usr/local/bin/cadvisor
     mode: '0755'
+    force: yes
 
 - name: Create systemd service for cAdvisor
   copy:
@@ -17,10 +28,17 @@
       [Unit]
       Description=cAdvisor Exporter
       After=network.target docker.service containerd.service
+      Requires=docker.service
 
       [Service]
       Type=simple
-      ExecStart=/usr/local/bin/cadvisor --port=8081 --docker_only=true
+      User=root
+      Group=root
+      ExecStart=/usr/local/bin/cadvisor \
+        --port=8081 \
+        --docker_only=true \
+        --docker=unix:///var/run/docker.sock \
+        --containerd=/run/containerd/containerd.sock
       Restart=always
       RestartSec=10
 
