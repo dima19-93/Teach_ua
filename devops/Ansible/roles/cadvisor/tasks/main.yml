@@ -18,4 +18,5 @@
       - /var/run:/var/run:ro
     devices:
       - /dev/kmsg
-    command: ["--docker_only=true"]
+    env:
+      CADVISOR_HEALTHCHECK_URL: "http://localhost:8080/healthz"
