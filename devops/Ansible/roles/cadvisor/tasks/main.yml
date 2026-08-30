@@ -1,27 +1,7 @@
 ---
-- name: Create systemd service for cAdvisor
-  copy:
-    dest: /etc/systemd/system/cadvisor.service
-    content: |
-      [Unit]
-      Description=cAdvisor Exporter
-      After=network.target docker.service containerd.service
-      Requires=docker.service
-
-      [Service]
-      Type=simple
-      User=root
-      Group=root
-
-      ExecStart=/usr/local/bin/cadvisor \
-        --port=8081 \
-        --docker_only=true \
-        --docker=unix:///var/run/docker.sock \
-        --runtime-containerd=/run/containerd/containerd.sock \
-        --cgroup_hierarchy=true
-      Restart=always
-      RestartSec=10
-
-      [Install]
-      WantedBy=multi-user.target
+- name: Stop and disable old cAdvisor service
+  systemd:
+    name: cadvisor
+    state: stopped
+    enabled: no
 

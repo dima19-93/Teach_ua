@@ -15,6 +15,7 @@ scrape_configs:
     static_configs:
       - targets: ['192.168.33.11:9100']
 
-  - job_name: 'docker-containers-cadvisor'
+  - job_name: 'docker-containers-native'
     static_configs:
-      - targets: ['192.168.33.11:8081'] 
+      - targets: ['192.168.33.11:9323']
+ 
