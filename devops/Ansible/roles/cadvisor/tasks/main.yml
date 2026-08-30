@@ -9,6 +9,7 @@
     published_ports:
       - "8081:8080"
     ipc_mode: host
+    pid_mode: host
     user: "0:0"
     volumes:
       - /:/rootfs:ro
