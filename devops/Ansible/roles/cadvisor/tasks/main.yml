@@ -4,19 +4,9 @@
     name: cadvisor
     state: absent
 
-- name: Set architecture variable to amd64
-  set_fact:
-    cadvisor_arch: "amd64"
-  when: ansible_architecture == "x86_64"
-
-- name: Set architecture variable to arm64
-  set_fact:
-    cadvisor_arch: "arm64"
-  when: ansible_architecture == "aarch64" or ansible_architecture == "arm64"
-
-- name: Download correct cAdvisor binary
+- name: Download correct cAdvisor binary from GitHub
   get_url:
-    url: "https://github.com/google/cadvisor/releases/download/v0.47.0/cadvisor"
+    url: "https://github.com/google/cadvisor/releases/download/v0.49.1/cadvisor-v0.49.1-linux-amd64"
     dest: /usr/local/bin/cadvisor
     mode: '0755'
     force: yes
