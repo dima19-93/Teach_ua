@@ -57,4 +57,4 @@
       - /etc/grafana/provisioning:/etc/grafana/provisioning
     env:
       GF_CONTACT_POINTS_TELEGRAM_CHAT_ID: "565831953"
-      GF_CONTACT_POINTS_TELEGRAM_TOKEN: "{{ tg_bot_token }}"
+      GF_CONTACT_POINTS_TELEGRAM_TOKEN: "{{ lookup('env', 'TG_TOKEN') }}"
