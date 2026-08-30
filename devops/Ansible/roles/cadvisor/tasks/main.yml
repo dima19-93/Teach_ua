@@ -22,4 +22,6 @@
       - /var/run:/var/run:rw
     devices:
       - /dev/kmsg
-
+    command:
+      - "--docker_only=true"
+      - "--docker=unix:///var/run/docker.sock"
