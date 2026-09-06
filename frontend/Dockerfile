@@ -1,22 +1,42 @@
-FROM node:18-alpine
+FROM node:18-alpine AS build
 WORKDIR /app
-
 COPY package*.json ./
+
+
 RUN npm install
-RUN npm install http-proxy-middleware@2.0.10
 
 COPY . .
 
 
 ENV DISABLE_ESLINT_PLUGIN=true
+ENV EXTEND_ESLINT=true
 ENV CI=false
-ENV REACT_APP_ROOT_SERVER=http://192.168.33.11
+ENV NODE_OPTIONS=--openssl-legacy-provider
+ENV ESCAPE_ESLINT_ERRORS=true
+ENV REACT_APP_ROOT_SERVER=http://teachua-modular-alb-48036850.eu-central-1.elb.amazonaws.com
 
-RUN sed -i 's/\bROOT_SERVER\b/""/g' src/config/ApplicationConfig.js
 
+RUN cat << 'EOF' > src/config/ApplicationConfig.js
+export const ROOT_SERVER = "http://teachua-modular-alb-48036850.eu-central-1.elb.amazonaws.com";
+export const ROOT_URI = "";
+export const BASE_URL = `${ROOT_SERVER}/dev`;
+EOF
 
-EXPOSE 3000
 
 RUN find src/ -type f -name "*.js" -o -name "*.jsx" | xargs sed -i 's|src="dev/static/|src="/dev/static/|g'
-CMD ["npm", "start"]
+
+
+RUN npm run build
+
+
+
+FROM nginx:alpine
+
+RUN sed -i 's/listen       80;/listen       3000;/g' /etc/nginx/conf.d/default.conf
+
+
+COPY --from=build /app/build /usr/share/nginx/html
+
+EXPOSE 3000
+CMD ["nginx", "-g", "daemon off;"]
 

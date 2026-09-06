@@ -5,13 +5,15 @@ RUN mvn dependency:go-offline -B
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/dev.war ./app.war
+
+
+COPY data.sql ./data.sql
+
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.war"]
-
 
 
 
