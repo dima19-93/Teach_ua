@@ -9,3 +9,8 @@ variable "db_password" {
   type      = string
   sensitive = true
 }
+
+variable "db_password_parameter_arn" {
+  type        = string
+  description = "The ARN of the SSM Parameter holding the DB password"
+}

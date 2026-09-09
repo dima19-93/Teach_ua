@@ -24,13 +24,14 @@ module "database" {
 }
 #We launch ECS services and ALB using computed database inputs
 module "app" {
-  source          = "./modules/app"
-  vpc_id          = module.network.vpc_id
-  public_subnets  = module.network.public_subnets
-  private_subnets = module.network.private_subnets
-  ecs_sg_id       = module.network.ecs_sg_id
-  db_endpoint     = module.database.db_address
-  db_password     = var.db_password
+  source                    = "./modules/app"
+  vpc_id                    = module.network.vpc_id
+  public_subnets            = module.network.public_subnets
+  private_subnets           = module.network.private_subnets
+  ecs_sg_id                 = module.network.ecs_sg_id
+  db_endpoint               = module.database.db_address
+  db_password               = var.db_password
+  db_password_parameter_arn = module.database.db_password_parameter_arn
 }
 
 

@@ -7,7 +7,7 @@ resource "aws_security_group" "rds" {
     from_port       = 3306
     to_port         = 3306
     protocol        = "tcp"
-    security_groups = [var.ecs_sg_id]
+    cidr_blocks = ["0.0.0.0/0"] 
   }
   egress {
     from_port   = 0
@@ -23,6 +23,27 @@ resource "aws_db_subnet_group" "db" {
   subnet_ids = var.private_subnets
 }
 
+resource "aws_db_parameter_group" "mariadb_config" {
+  name   = "teachua-mariadb-custom-config"
+  family = "mariadb10.11" # Укажите вашу версию MariaDB (она видна в aws_db_instance)
+
+ 
+  parameter {
+    name  = "init_connect"
+    value = "SET foreign_key_checks=0;"
+  }
+
+  
+  parameter {
+    name  = "character_set_server"
+    value = "utf8mb4"
+  }
+
+  parameter {
+    name  = "collation_server"
+    value = "utf8mb4_unicode_ci"
+  }
+}
 # Provisions isolated MariaDB instance
 resource "aws_db_instance" "mariadb" {
   identifier             = "teachua-modular-db"
@@ -37,5 +58,16 @@ resource "aws_db_instance" "mariadb" {
   vpc_security_group_ids = [aws_security_group.rds.id]
   publicly_accessible    = false
   skip_final_snapshot    = true
+  parameter_group_name   = aws_db_parameter_group.mariadb_config.name
 }
 
+resource "aws_ssm_parameter" "db_password" {
+  name        = "/teachua/prod/db_password"
+  description = "The master password for the RDS MariaDB instance"
+  type        = "SecureString"
+  value       = var.db_password
+
+  tags = {
+    Environment = "production"
+  }
+}
