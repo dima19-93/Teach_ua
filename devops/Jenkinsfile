@@ -56,7 +56,11 @@ pipeline {
 
         stage('Deploy to ECS') {
             agent {
-                docker { image 'amazon/aws-cli:latest' }
+                docker { 
+                    image 'amazon/aws-cli:latest'
+                    
+                    args '-v /var/run/docker.sock:/var/run/docker.sock'
+                }
             }
             steps {
                 script {
@@ -67,15 +71,11 @@ pipeline {
                       --force-new-deployment \
                       --region ${AWS_REGION}
                     """
+                    
+                    
+                    sh "amazon-linux-extras install docker -y || yum install docker -y || true"
+                    sh "docker image prune -f || true"
                 }
-            }
-        }
-    }
-
-    post {
-        always {
-            script {
-                sh "docker image prune -f"
             }
         }
     }
