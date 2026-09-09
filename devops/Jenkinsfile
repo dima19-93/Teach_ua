@@ -1,5 +1,6 @@
 pipeline {
-    agent none 
+    
+    agent any 
 
     environment {
         AWS_REGION          = 'eu-central-1'
@@ -12,22 +13,16 @@ pipeline {
 
     stages {
         stage('Checkout') {
-            agent any 
             steps {
                 checkout scm
             }
         }
 
         stage('Build & Push Backend') {
-            agent {
-                docker { 
-                    image 'docker:latest'
-                    args '-v /var/run/docker.sock:/var/run/docker.sock' 
-                }
-            }
             steps {
                 script {
-                    sh "docker login -u AWS -p \$(wget -qO- --header='X-Aws-Parameters-Secrets-Token: ' 'http://169.254.169.254') https://${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+                    
+                    sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
                     
                     dir('backend') {
                         sh "docker build -t ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}://{BACKEND_REPOSITORY}:latest ."
@@ -38,12 +33,6 @@ pipeline {
         }
 
         stage('Build & Push Frontend') {
-            agent {
-                docker { 
-                    image 'docker:latest'
-                    args '-v /var/run/docker.sock:/var/run/docker.sock'
-                }
-            }
             steps {
                 script {
                     dir('frontend') {
@@ -55,15 +44,9 @@ pipeline {
         }
 
         stage('Deploy to ECS') {
-            agent {
-                docker { 
-                    image 'amazon/aws-cli:latest'
-                    
-                    args '-v /var/run/docker.sock:/var/run/docker.sock'
-                }
-            }
             steps {
                 script {
+                    
                     sh """
                     aws ecs update-service \
                       --cluster ${ECS_CLUSTER} \
@@ -71,11 +54,16 @@ pipeline {
                       --force-new-deployment \
                       --region ${AWS_REGION}
                     """
-                    
-                    
-                    sh "amazon-linux-extras install docker -y || yum install docker -y || true"
-                    sh "docker image prune -f || true"
                 }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                
+                sh "docker image prune -f"
             }
         }
     }
