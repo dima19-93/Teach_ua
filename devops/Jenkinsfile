@@ -1,32 +1,34 @@
 pipeline {
-    agent any
+    agent none 
 
     environment {
-        
-        AWS_REGION     = 'eu-central-1'
-        AWS_ACCOUNT_ID = '908456387091'
-        
-        
+        AWS_REGION          = 'eu-central-1'
+        AWS_ACCOUNT_ID      = '908456387091'
         BACKEND_REPOSITORY  = 'teachua-backend'
         FRONTEND_REPOSITORY = 'teachua-frontend'
-        
-        
-        ECS_CLUSTER    = 'teachua-modular-cluster'
-        ECS_SERVICE    = 'teachua-app-service'
+        ECS_CLUSTER         = 'teachua-modular-cluster'
+        ECS_SERVICE         = 'teachua-app-service'
     }
 
     stages {
         stage('Checkout') {
+            agent any 
             steps {
-                
                 checkout scm
             }
         }
 
-        steps {
+        stage('Build & Push Backend') {
+            agent {
+                docker { 
+                    image 'docker:latest'
+                    args '-v /var/run/docker.sock:/var/run/docker.sock' 
+                }
+            }
+            steps {
                 script {
+                    sh "docker login -u AWS -p \$(wget -qO- --header='X-Aws-Parameters-Secrets-Token: ' 'http://169.254.169.254') https://${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
                     
-                    sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
                     dir('backend') {
                         sh "docker build -t ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}://{BACKEND_REPOSITORY}:latest ."
                         sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}://{BACKEND_REPOSITORY}:latest"
@@ -36,9 +38,14 @@ pipeline {
         }
 
         stage('Build & Push Frontend') {
+            agent {
+                docker { 
+                    image 'docker:latest'
+                    args '-v /var/run/docker.sock:/var/run/docker.sock'
+                }
+            }
             steps {
                 script {
-                    
                     dir('frontend') {
                         sh "docker build -t ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}://{FRONTEND_REPOSITORY}:latest ."
                         sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}://{FRONTEND_REPOSITORY}:latest"
@@ -48,9 +55,11 @@ pipeline {
         }
 
         stage('Deploy to ECS') {
+            agent {
+                docker { image 'amazon/aws-cli:latest' }
+            }
             steps {
                 script {
-                    
                     sh """
                     aws ecs update-service \
                       --cluster ${ECS_CLUSTER} \
@@ -65,8 +74,9 @@ pipeline {
 
     post {
         always {
-            
-            sh "docker image prune -f"
+            node {
+                sh "docker image prune -f"
+            }
         }
     }
 }
