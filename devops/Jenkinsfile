@@ -23,13 +23,10 @@ pipeline {
             }
         }
 
-        stage('Build & Push Backend') {
-            steps {
+        steps {
                 script {
                     
                     sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
-                    
-                    
                     dir('backend') {
                         sh "docker build -t ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}://{BACKEND_REPOSITORY}:latest ."
                         sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}://{BACKEND_REPOSITORY}:latest"
