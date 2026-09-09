@@ -76,12 +76,12 @@ insert into `news`(title, description, date, url_title_logo) values ('title3', '
 insert into `districts`(name, city_id) values ('No District', 1);
 insert into `districts`(name, city_id) values ('No District', 2);
 insert into `districts`(name, city_id) values ('No District', 3);
-insert into `districts`(name, city_id) values ('No District', 4);
-insert into `districts`(name, city_id) values ('No District', 5);
-insert into `districts`(name, city_id) values ('No District', 6);
-insert into `districts`(name, city_id) values ('No District', 7);
-insert into `districts`(name, city_id) values ('No District', 8);
-insert into `districts`(name, city_id) values  ('No District', 9);
+-- insert into `districts`(name, city_id) values ('No District', 4);
+-- insert into `districts`(name, city_id) values ('No District', 5);
+-- insert into `districts`(name, city_id) values ('No District', 6);
+-- insert into `districts`(name, city_id) values ('No District', 7);
+-- insert into `districts`(name, city_id) values ('No District', 8);
+-- insert into `districts`(name, city_id) values  ('No District', 9);
 
 
 insert into `stations`(name, city_id, district_id) values ('No Station', 1, 1);
