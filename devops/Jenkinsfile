@@ -1,5 +1,4 @@
 pipeline {
-    
     agent any 
 
     environment {
@@ -21,9 +20,7 @@ pipeline {
         stage('Build & Push Backend') {
             steps {
                 script {
-                    
                     sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
-                    
                     dir('backend') {
                         sh "docker build -t ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}://{BACKEND_REPOSITORY}:latest ."
                         sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}://{BACKEND_REPOSITORY}:latest"
@@ -46,7 +43,6 @@ pipeline {
         stage('Deploy to ECS') {
             steps {
                 script {
-                    
                     sh """
                     aws ecs update-service \
                       --cluster ${ECS_CLUSTER} \
@@ -55,15 +51,6 @@ pipeline {
                       --region ${AWS_REGION}
                     """
                 }
-            }
-        }
-    }
-
-    post {
-        always {
-            script {
-                
-                sh "docker image prune -f"
             }
         }
     }
