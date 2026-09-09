@@ -47,8 +47,8 @@ public class SecurityConfig {
                     .requestMatchers("/roles").hasRole(RoleData.ADMIN.getRoleName())
                     .requestMatchers("/hello").hasAnyRole(RoleData.ADMIN.getRoleName(), RoleData.USER.getRoleName())
                     .requestMatchers("/index", "/signup", "/signin", "/signout", "/user{id}", "/user{email}", "/users", "/api/**").permitAll()
-                )
-                .addFilterAt(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                );
+                //.addFilterAt(jwtFilter, UsernamePasswordAuthenticationFilter.class);
                 return http.build();
     }
 

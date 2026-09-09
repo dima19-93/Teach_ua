@@ -1,3 +1,4 @@
+SET FOREIGN_KEY_CHECKS = 0;
 USE teachua;
 
 
@@ -131,3 +132,5 @@ insert into `club_category`(club_id, category_id) VALUES (7, 5);
 insert into `club_category`(club_id, category_id) VALUES (8, 9);
 insert into `club_category`(club_id, category_id) VALUES (9, 1);
 insert into `club_category`(club_id, category_id) VALUES (10, 3);
+COMMIT;
+SET FOREIGN_KEY_CHECKS = 1;

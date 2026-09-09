@@ -7,11 +7,13 @@ RUN mvn clean package -DskipTests
 
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
+RUN apk add --no-cache zip
 COPY --from=build /app/target/dev.war ./app.war
-
-
 COPY data.sql ./data.sql
-
+RUN mkdir -p WEB-INF/classes && \
+    cp data.sql WEB-INF/classes/data.sql && \
+    zip -u app.war WEB-INF/classes/data.sql && \
+    rm -rf WEB-INF
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.war"]
 
