@@ -108,7 +108,7 @@ resource "aws_ecs_task_definition" "app" {
         { name = "JAVA_OPTS", value = "-Xms1024m -Xmx1536m -Dspring.security.enabled=false -Dmanagement.security.enabled=false" },
        
 
-        { name = "spring.jpa.hibernate.ddl-auto", value = "create" },
+        { name = "SPRING_JPA_HIBERNATE_DDL_AUTO", value = "create" },
         { name = "SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT", value = "org.hibernate.dialect.MariaDBDialect" },
         { name = "SPRING_SQL_INIT_MODE", value = "always" },
         { name = "SPRING_SQL_INIT_DATA_LOCATIONS", value = "classpath:data.sql" },
