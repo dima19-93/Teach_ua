@@ -8,6 +8,8 @@ pipeline {
         FRONTEND_REPOSITORY = 'teachua-frontend'
         ECS_CLUSTER         = 'teachua-modular-cluster'
         ECS_SERVICE         = 'teachua-app-service'
+        GITHUB_TOKEN        = sh(script: "aws ssm get-parameter --name '/teachua/cicd/github_pat' --with-decryption --query 'Parameter.Value' --output text --region eu-central-1", returnStdout: true).trim()
+
     }
 
     stages {
