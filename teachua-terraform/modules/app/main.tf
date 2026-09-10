@@ -103,7 +103,7 @@ resource "aws_ecs_task_definition" "app" {
         { name = "JDBC_DRIVER", value = "org.mariadb.jdbc.Driver" },
         { name = "DATASOURCE_URL", value = "jdbc:mariadb://${var.db_endpoint}:3306/teachua?useUnicode=true&characterEncoding=UTF-8" },
         { name = "DATASOURCE_USER", value = "adminserver" },
-        { name = "SPRING_PROFILES_ACTIVE", value = "local" },
+        { name = "SPRING_PROFILES_ACTIVE", value = "prod" },
         { name = "SPRING_SECURITY_ENABLED", value = "false" }, 
         { name = "JAVA_OPTS", value = "-Xms1024m -Xmx1536m -Dspring.security.enabled=false -Dmanagement.security.enabled=false" },
        
