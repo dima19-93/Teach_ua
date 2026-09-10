@@ -108,9 +108,9 @@ resource "aws_ecs_task_definition" "app" {
         { name = "JAVA_OPTS", value = "-Xms1024m -Xmx1536m -Dspring.security.enabled=false -Dmanagement.security.enabled=false" },
        
 
-        { name = "SPRING_JPA_HIBERNATE_DDL_AUTO", value = "create" },
+        { name = "SPRING_JPA_HIBERNATE_DDL_AUTO", value = "update" },
         { name = "SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT", value = "org.hibernate.dialect.MariaDBDialect" },
-        { name = "SPRING_SQL_INIT_MODE", value = "always" },
+        { name = "SPRING_SQL_INIT_MODE", value = "never" },
         { name = "SPRING_SQL_INIT_DATA_LOCATIONS", value = "classpath:data.sql" },
         { name = "SPRING_SQL_INIT_CONTINUE_ON_ERROR", value = "true" },
         { name = "SPRING_JPA_DEFER_DATASOURCE_INITIALIZATION", value = "true" },
