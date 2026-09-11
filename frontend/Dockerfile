@@ -7,7 +7,7 @@ COPY . .
 ENV DISABLE_ESLINT_PLUGIN=true
 ENV EXTEND_ESLINT=true
 ENV CI=false
-ENV NODE_OPTIONS=--openssl-legacy-provider
+#ENV NODE_OPTIONS=--openssl-legacy-provider
 ENV ESCAPE_ESLINT_ERRORS=true
 
 RUN echo 'export const ROOT_SERVER = "";' > src/config/ApplicationConfig.js && \
