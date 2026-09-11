@@ -51,10 +51,10 @@ pipeline {
                 script {
                     
                     
-                    sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image --severity HIGH,CRITICAL --exit-code 0 ${env.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}://{env.FRONTEND_REPOSITORY}:latest"
+                    sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image --severity HIGH,CRITICAL --exit-code 0 $AWS_ACCOUNT_ID.dkr.ecr.$AWS_://amazonaws.com'
                     
                     
-                    sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image --severity HIGH,CRITICAL --exit-code 0 ${env.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}://{env.BACKEND_REPOSITORY}:latest"
+                    sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image --severity HIGH,CRITICAL --exit-code 0 $AWS_ACCOUNT_ID.dkr.ecr.$AWS_://amazonaws.com'
                 }
             }
         }
