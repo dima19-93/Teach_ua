@@ -12,6 +12,13 @@ resource "aws_security_group" "alb" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+ 
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   egress {
     from_port   = 0
@@ -62,6 +69,19 @@ resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.alb.arn
   port              = "80"
   protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.frontend.arn
+  }
+}
+# Main listener routing traffic to Frontend 443 port
+resource "aws_lb_listener" "https" {
+  load_balancer_arn = aws_lb.alb.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = "arn:aws:acm:eu-central-1:908456387091:certificate/a02ca441-f6fe-435e-9f43-9530d030a9d1"
 
   default_action {
     type             = "forward"
