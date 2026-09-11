@@ -1,34 +1,40 @@
 import React from 'react';
 import { UserOutlined } from "@ant-design/icons";
-import Radio from "antd/es/radio/radio";
+import { Radio } from "antd";
 
-const RegistrationRoles = ({setDisabledButton, disabledButton}) => {
+const RegistrationRoles = ({ setDisabledButton }) => {
 
     const onChangeHandle = (e) => {
-        setDisabledButton(false)
-        console.log(e.target.value)
-    }
+        setDisabledButton(false);
+        console.log(e.target.value);
+    };
 
     return (
-        <Radio.Group className="button-container"
-                     onChange={onChangeHandle}
-                     optionType="button"
-                     buttonStyle="solid"
+        <Radio.Group
+            className="button-container"
+            onChange={onChangeHandle}
+            buttonStyle="solid"
         >
-            <Radio value="user">
+            <Radio.Button value="user" className="ant-radio-button-wrapper">
                 <div className="button-box">
-                    <div className="ellipse"><UserOutlined className="user-icon"/></div>
+                    <div className="ellipse">
+                        <UserOutlined className="user-icon"/>
+                    </div>
                     Відвідувач
                 </div>
-            </Radio>
-            <Radio value="owner">
+            </Radio.Button>
+
+            <Radio.Button value="owner" className="ant-radio-button-wrapper">
                 <div className="button-box">
-                    <div className="ellipse"><UserOutlined className="user-icon"/></div>
+                    <div className="ellipse">
+                        <UserOutlined className="user-icon"/>
+                    </div>
                     Керівник
                 </div>
-            </Radio>
+            </Radio.Button>
         </Radio.Group>
-    )
-}
+    );
+};
 
-export default RegistrationRoles
+export default RegistrationRoles;
+

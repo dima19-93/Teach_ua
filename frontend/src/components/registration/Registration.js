@@ -29,7 +29,9 @@ const Registration = () => {
                     Реєстрація
                 </div>
                 <div className="registration-content">
-                    <h1>TEST DEVOPS:WORKS</h1>
+                    <RegistrationRoles setDisabledButton={setDisabledButton} disabledButton={disabledButton}/>
+                    <RegistrationSocial/>
+                    <RegistrationInput disabledButton={disabledButton}/>
                 </div>
             </Modal>
         </>
