@@ -27,7 +27,7 @@ const RegistrationInput = ({disabledButton}) => {
             </div>
             <div className="registration-row">
                 <span className="label">
-             Телефон
+              Телефон
                 </span>
                 <div className="registration-box"><Input className="registration-input" placeholder="+38(___) ___ __ __"
                                                          suffix={<PhoneOutlined className="phone-icon"/>}>
@@ -36,7 +36,7 @@ const RegistrationInput = ({disabledButton}) => {
             </div>
             <div className="registration-row">
                 <span className="label">
-                 Email
+                  Email
                 </span>
                 <div className="registration-box"><Input className="registration-input" placeholder="Введіть ваш емейл"
                                                          suffix={<MailOutlined className="mail-icon"/>}>
