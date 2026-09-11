@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Button, Modal, Switch} from 'antd';
 import './css/Registration.less';
 import RegistrationRoles from "./RegistrationRoles";
-// import RegistrationSocial from "./RegistrationSocial";
+import RegistrationSocial from "./RegistrationSocial";
 import RegistrationInput from "./RegistrationInput";
 
 
