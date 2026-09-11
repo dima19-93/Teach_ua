@@ -39,7 +39,7 @@ const RegistrationInput = ({disabledButton}) => {
                  Email
                 </span>
                 <div className="registration-box"><Input className="registration-input" placeholder="Введіть ваш емейл"
-                                                         suffix={<MailOutlined classname="mail-icon"/>}>
+                                                         suffix={<MailOutlined className="mail-icon"/>}>
                 </Input>
                 </div>
             </div>
