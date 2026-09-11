@@ -2,7 +2,7 @@ import React from 'react';
 import UserOutlined from "@ant-design/icons/lib/icons/UserOutlined";
 import Radio from "antd/es/radio/radio";
 
-const RegistrationRoles = ({setDisabledButton}) => {
+const RegistrationRoles = ({setDisabledButton, disabledButton}) => {
 
     const onChangeHandle = (e) => {
         setDisabledButton(false)
