@@ -20,6 +20,7 @@ const Registration = () => {
                 centered
                 width={520}
                 visible={visible}
+                open={visible}
                 onOk={() => setVisible(false)}
                 onCancel={() => setVisible(false)}
                 footer={null}
