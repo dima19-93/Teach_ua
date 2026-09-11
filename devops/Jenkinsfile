@@ -39,7 +39,7 @@ pipeline {
                 script {
                     dir('frontend') {
                         
-                        sh "docker build -t ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${FRONTEND_REPOSITORY}:latest ."
+                        sh "docker build --build-arg DISABLE_MINIFIER=true -t ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${FRONTEND_REPOSITORY}:latest ."
                         sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${FRONTEND_REPOSITORY}:latest"
                     }
                 }

@@ -13,6 +13,8 @@ ENV ESCAPE_ESLINT_ERRORS=true
 RUN echo 'export const ROOT_SERVER = "";' > src/config/ApplicationConfig.js && \
     echo 'export const ROOT_URI = "";' >> src/config/ApplicationConfig.js && \
     echo 'export const BASE_URL = `${ROOT_SERVER}/dev`;' >> src/config/ApplicationConfig.js
+ARG DISABLE_MINIFIER=true
+ENV DISABLE_MINIFIER=$DISABLE_MINIFIER
 ENV GENERATE_SOURCEMAP=false
 ENV NODE_ENV=development
 RUN npm run build
