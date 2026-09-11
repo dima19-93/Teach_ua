@@ -89,6 +89,23 @@ resource "aws_lb_listener" "https" {
   }
 }
 
+resource "aws_lb_listener_rule" "api_routing" {
+  listener_arn = aws_lb_listener.https.arn
+  priority     = 10
+
+  action {
+    type             = "forward"
+    target_group_arn = "arn:aws:elasticloadbalancing:eu-central-1:908456387091:targetgroup/teachua-mod-back-tg/36160e35a89f90e1"
+  }
+
+  
+  condition {
+    path_pattern {
+      values = ["/api/*", "/api"]
+    }
+  }
+}
+
 # Core ECS Cluster hosting Fargate tasks
 resource "aws_ecs_cluster" "main" {
   name = "teachua-modular-cluster"
