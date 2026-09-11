@@ -46,6 +46,19 @@ pipeline {
             }
         }
 
+        stage('Trivy Security Scanning') {
+            steps {
+                script {
+                    
+                    sh "trivy image --severity HIGH,CRITICAL --exit-code 0 ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}://{FRONTEND_REPOSITORY}:latest"
+                    
+                    
+                    sh "trivy image --severity HIGH,CRITICAL --exit-code 0 ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}://{BACKEND_REPOSITORY}:latest"
+                }
+            }
+        }
+
+
         stage('Deploy to ECS') {
             steps {
                 script {
