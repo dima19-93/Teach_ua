@@ -1,5 +1,5 @@
 import React from 'react';
-import UserOutlined from "@ant-design/icons/lib/icons/UserOutlined";
+import { UserOutlined } from "@ant-design/icons";
 import Radio from "antd/es/radio/radio";
 
 const RegistrationRoles = ({setDisabledButton, disabledButton}) => {
