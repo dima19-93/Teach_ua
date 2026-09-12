@@ -63,7 +63,7 @@ pipeline {
                         curl -H "Content-Type: application/json" \
                         -X POST \
                         -d '{"content": "🛡️ **Trivy Security Scanning Completed!**\\nImages for *${BACKEND_REPOSITORY}* and *${FRONTEND_REPOSITORY}* have been scanned. Check Jenkins console logs for details."}' \
-                        ${DISCORD_WEBHOOK}
+                        ${DISCORD_WEBHOOK} || true
                     """
                 }
             }
