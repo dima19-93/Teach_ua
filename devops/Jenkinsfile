@@ -47,23 +47,26 @@ pipeline {
         }
 
         stage('Trivy Security Scanning') {
-            environment {
-                DISCORD_WEBHOOK = credentials('discord-webhook-url')
-            }
             steps {
                 script {
             
+                    def DISCORD_WEBHOOK = sh(
+                        script: "aws ssm get-parameter --name '/teachua/cicd/discord_webhook_url' --with-decryption --query 'Parameter.Value' --output text --region eu-central-1",
+                        returnStdout: true
+                    ).trim()
+
+                    // Backend scan
                     sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image --severity HIGH,CRITICAL --exit-code 0 ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${BACKEND_REPOSITORY}:latest"
 
-            
+                    // Frontend scan
                     sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image --severity HIGH,CRITICAL --exit-code 0 ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${FRONTEND_REPOSITORY}:latest"
 
-            
+                    // Discord notification
                     sh """
                         curl -H "Content-Type: application/json" \
                         -X POST \
-                        -d '{"content": "**Trivy Security Scanning Completed!**\\nImages for *${BACKEND_REPOSITORY}* and *${FRONTEND_REPOSITORY}* have been scanned. Check Jenkins console logs for details."}' \
-                        \$DISCORD_WEBHOOK || true
+                        -d '{"content": "🛡️ **Trivy Security Scanning Completed!**\\nImages for *${BACKEND_REPOSITORY}* and *${FRONTEND_REPOSITORY}* have been scanned. Check Jenkins console logs for details."}' \
+                        '${DISCORD_WEBHOOK}' || true
                     """
                 }
             }
