@@ -80,7 +80,7 @@
 ![Docker Images Frontend](images/images_frontend.png)
 
 #### 9. Маршрутизація Application Load Balancer
-Очищені правила Listener Rules на балансувальнику ALB, де весь трафік перенаправляється на єдину робочу групу порту 80.
+Правила Listener Rules на балансувальнику ALB, де весь трафік перенаправляється на єдину робочу групу порту 80.
 ![ALB Listeners](images/Listeners.png)
 
 #### 10. Безсерверна автоматизація AWS Lambda
