@@ -45,6 +45,58 @@
 
 **Досягнуті результати:**
 
+#### 1. Моніторинг та метрики CloudWatch
+Графіки навантаження та збору метрик інфраструктури в реальному часі.
+![CloudWatch](images/cloudwatch.png)
+
+#### 2. Стан ECS Кластера
+Загальний огляд працездатності створеного кластера `teachua-modular-cluster`.
+![ECS Cluster](images/cluster.png)
+
+#### 3. Багатоконтейнерна архітектура ECS Tasks
+Підтвердження успішного одночасного запуску та розподілу ресурсів для контейнерів `frontend` та `backend`.
+![ECS Containers](images/containers.png)
+
+#### 4. Реєстр артефактів Amazon ECR
+Сховище готових до релізу Docker-образів для фронтенду та бекенду.
+![ECR Repositories](images/repositories.png)
+
+#### 5. Параметри безпеки у AWS Parameter Store
+Перелік зашифрованих конфіденційних даних та вебхуків для автоматизації деплою.
+![AWS Parameter Store](images/secrets.png)
+
+#### 6. Звіти аудиту безпеки Trivy
+Детальні логи сканування та виявлення CVE для образів бекенду та фронтенду в консолі Jenkins.
+![Trivy Backend Scan](images/trivy_backend.png)
+![Trivy Frontend Scan](images/trivy_frontend.png)
+
+#### 7. Мережева ізоляція AWS RDS MariaDB
+Конфігурація Security Group, яка дозволяє вхідний трафік на порт 3306 виключно з Security Group самого ECS-таска.
+![RDS Security Group](images/database_rules.png)
+
+#### 8. Docker-инфраструктура артефактів
+Образи фронтенду та бекенду, підготовлені та упаковані для пушу в хмару.
+![Docker Images Backend](images/images_backend.png)
+![Docker Images Frontend](images/images_frontend.png)
+
+#### 9. Маршрутизація Application Load Balancer
+Очищені правила Listener Rules на балансувальнику ALB, де весь трафік перенаправляється на єдину робочу групу порту 80.
+![ALB Listeners](images/Listeners.png)
+
+#### 10. Безсерверна автоматизація AWS Lambda
+Конфігурація коду та тригерів SNS для обробки системних подій.
+![AWS Lambda](images/lambda.png)
+
+#### 11. Сповіщення та алерти у Discord
+Финальні картки моніторингу безпеки та інфраструктурних сповіщень, доставлені до текстових каналів Discord.
+![Trivy Discord Notifications](images/notifications_trivy.png)
+![CloudWatch CPU Alarm](images/alert.png)
+
+#### 12. Робота вебзастосунку через HTTPS
+Верифікація успішного доступу до сайту TeachUA за шифрованим HTTPS-протоколом із коректним підвантаженням списку міст із бази даних RDS.
+![TeachUA HTTPS Live](images/stiehttps.png)
+
+
 ### Проблеми та рішення
 
 | # | Проблема | Рішення | Статус |
