@@ -37,23 +37,23 @@ resource "aws_lb" "alb" {
 }
 
 # Target Group for Spring Boot Backend service
-resource "aws_lb_target_group" "backend" {
-  name        = "teachua-mod-back-tg"
-  port        = 8080
-  protocol    = "HTTP"
-  vpc_id      = var.vpc_id
-  target_type = "ip"
+#resource "aws_lb_target_group" "backend" {
+#  name        = "teachua-mod-back-tg"
+#  port        = 8080
+#  protocol    = "HTTP"
+#  vpc_id      = var.vpc_id
+#  target_type = "ip"
 
-  health_check {
-    path                = "/dev/api/cities"
-    port                = "8080"
-    healthy_threshold   = 2
-    unhealthy_threshold = 5
-    interval            = 30
-    timeout             = 5
-    matcher             = "200-499"
-  }
-}
+#  health_check {
+#    path                = "/dev/api/cities"
+#    port                = "8080"
+#    healthy_threshold   = 2
+#    unhealthy_threshold = 5
+#    interval            = 30
+#    timeout             = 5
+#    matcher             = "200-499"
+#  }
+#}
 
 # Target Group for React Frontend service
 resource "aws_lb_target_group" "frontend" {
@@ -89,22 +89,22 @@ resource "aws_lb_listener" "https" {
   }
 }
 
-resource "aws_lb_listener_rule" "api_routing" {
-  listener_arn = aws_lb_listener.https.arn
-  priority     = 10
-
-  action {
-    type             = "forward"
-    target_group_arn = "arn:aws:elasticloadbalancing:eu-central-1:908456387091:targetgroup/teachua-mod-back-tg/36160e35a89f90e1"
-  }
-
-  
-  condition {
-    path_pattern {
-      values = ["/api/*", "/api"]
-    }
-  }
-}
+#resource "aws_lb_listener_rule" "api_routing" {
+#  listener_arn = aws_lb_listener.https.arn
+#  priority     = 10
+#
+#  action {
+#    type             = "forward"
+#    target_group_arn = "arn:aws:elasticloadbalancing:eu-central-1:908456387091:targetgroup/teachua-mod-back-tg/36160e35a89f90e1"
+#  }
+#
+#  
+#  condition {
+#    path_pattern {
+#      values = ["/api/*", "/api"]
+#    }
+#  }
+#}
 
 # Core ECS Cluster hosting Fargate tasks
 resource "aws_ecs_cluster" "main" {
