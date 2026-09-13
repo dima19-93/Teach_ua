@@ -17,3 +17,8 @@ output "ecs_sg_id" {
   value       = aws_security_group.ecs.id
   description = "The Security Group ID for ECS tasks"
 }
+
+output "ecs_security_group_id" {
+  value       = aws_security_group.ecs.id
+  description = "ECS security group ID exported from the network module"
+}
