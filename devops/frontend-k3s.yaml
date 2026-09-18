@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teach-ua-frontend
+  labels:
+    app: teach-ua-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: teach-ua-frontend
+  template:
+    metadata:
+      labels:
+        app: teach-ua-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: dima70593/teach_ua-frontend:latest
+        ports:
+        - containerPort: 3000
+        resources:
+          limits:
+            cpu: "128m"
+            memory: "256Mi"
+          requests:
+            cpu: "50m"
+            memory: "128Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  selector:
+    app: teach-ua-frontend
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
