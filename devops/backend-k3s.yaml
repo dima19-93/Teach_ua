@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teach-ua-backend
+  labels:
+    app: teach-ua-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: teach-ua-backend
+  template:
+    metadata:
+      labels:
+        app: teach-ua-backend
+    spec:
+      containers:
+      - name: backend
+        image: dima70593/teach_ua-backend:latest
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: "256m"
+            memory: "512Mi"
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: teach-ua-backend
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
