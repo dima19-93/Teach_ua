@@ -62,10 +62,11 @@
   background: #FFFFFF;
   color: black;
   box-shadow: 0 2px 4px rgba(51, 51, 50, 0.12);
+}
 
-  .ellipse {
-    background: #FA8C16;
-  }
+.modal-registration .ant-radio-button-wrapper:hover .ellipse,
+.modal-registration .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) .ellipse {
+  background: #FA8C16;
 }
 
 
@@ -94,8 +95,10 @@
 }
 
 .modal-registration .registration-content {
+  display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow-y: auto;
 }
 
 .icons {
@@ -121,8 +124,9 @@
   padding-top: 25px;
   padding-bottom: 8px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
+  margin: 0 auto;
 }
 
 .modal-registration .registration-or {
@@ -148,6 +152,7 @@
   font-size: 18px;
   padding-right: 16px;
   color: #2D4C68;
+  white-space: nowrap;
 }
 
 
@@ -157,10 +162,9 @@
   width: 20px;
 }
 
-.anticon-mail {
+.mail-icon {
   color: #8C8C8C;
-  z-index: 10;
-  font-size: 17px;
+  font-size: 18px;
   width: 20px;
 }
 
@@ -213,4 +217,3 @@
     align-items: center;
   }
 }
-

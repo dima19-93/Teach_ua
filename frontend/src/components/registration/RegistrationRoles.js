@@ -1,35 +1,40 @@
 import React from 'react';
-import UserOutlined from "@ant-design/icons/lib/icons/UserOutlined";
-import Radio from "antd/es/radio/radio";
+import { UserOutlined } from "@ant-design/icons";
+import { Radio } from "antd";
 
-const RegistrationRoles = ({setDisabledButton}) => {
+const RegistrationRoles = ({ setDisabledButton }) => {
 
     const onChangeHandle = (e) => {
-        setDisabledButton(false)
-        console.log(e.target.value)
-    }
+        setDisabledButton(false);
+        console.log(e.target.value);
+    };
 
     return (
-        <Radio.Group className="button-container"
-                     options={[{
-                         label: (
-                             <div className="button-box">
-                                 <div className="ellipse"><UserOutlined className="user-icon"/></div>
-                                 Відвідувач
-                             </div>),
-                         value: 'user'
-                     }, {
-                         label: (
-                             <div className="button-box">
-                                 <div className="ellipse"><UserOutlined className="user-icon"/></div>
-                                 Керівник
-                             </div>), value: 'owner'
-                     }]}
-                     onChange={onChangeHandle}
-                     optionType="button"
-                     buttonStyle="solid"
-        />
-    )
-}
+        <Radio.Group
+            className="button-container"
+            onChange={onChangeHandle}
+            buttonStyle="solid"
+        >
+            <Radio.Button value="user" className="ant-radio-button-wrapper">
+                <div className="button-box">
+                    <div className="ellipse">
+                        <UserOutlined className="user-icon"/>
+                    </div>
+                    Відвідувач
+                </div>
+            </Radio.Button>
 
-export default RegistrationRoles
+            <Radio.Button value="owner" className="ant-radio-button-wrapper">
+                <div className="button-box">
+                    <div className="ellipse">
+                        <UserOutlined className="user-icon"/>
+                    </div>
+                    Керівник
+                </div>
+            </Radio.Button>
+        </Radio.Group>
+    );
+};
+
+export default RegistrationRoles;
+

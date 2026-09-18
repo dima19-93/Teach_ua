@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "http-proxy-middleware": "2.0.6",
     "@ant-design/icons": "^4.4.0",
     "@craco/craco": "^6.1.0",
     "@react-google-maps/api": "^2.1.1",
@@ -44,6 +45,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "proxy": "http://backend:8080"
+  }
+
 }
