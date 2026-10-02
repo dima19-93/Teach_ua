@@ -25,7 +25,7 @@ Detailed view of how microservices communicate and how the cloud resources are o
 *   **Cloud Provider:** AWS (EC2, VPC, IAM, S3, EKS)
 *   **Containerization & Orchestration:** Docker, Kubernetes (AWS EKS)
 *   **Infrastructure as Code (IaC):** Terraform
-*   **CI/CD Automation:** Jenkins / GitHub Actions / GitLab CI
+*   **CI/CD Automation:** Jenkins
 *   **Configuration Management:** Ansible
 *   **Monitoring & Observability:** Prometheus & Grafana
 
@@ -33,7 +33,7 @@ Detailed view of how microservices communicate and how the cloud resources are o
 
 ## 🔄 CI/CD Workflow & Automation
 
-We implemented fully automated CI/CD pipelines to ensure rapid, reliable, and continuous delivery of microservices.
+I implemented fully automated CI/CD pipelines to ensure rapid, reliable, and continuous delivery of microservices.
 
 ### Production CI/CD Pipeline
 Automated pipeline handling code analysis, Docker image building, pushing to a container registry, and rolling deployments to the AWS EKS cluster.
